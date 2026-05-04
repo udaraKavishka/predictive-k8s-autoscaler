@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Pytest
+.pytest_cache/
+
+# Logs and runtime files
+*.log
+*.out
+*.pid
+
+# Model and data artifacts
+data/
+models/
+checkpoints/
+*.npz
+*.h5
+*.keras
+*.ckpt
+*.pth
+*.pt
+*.ckpt.index
+
+# Notebooks outputs
+*.nbconvert.ipynb
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Credentials and env files
+.env
+credentials.yaml
+
+# Kubernetes local cluster / tooling
+.minikube/
+kind/
+
+.stfolder/
+.claude/
