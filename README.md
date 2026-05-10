@@ -64,7 +64,7 @@ Scripts in `research_imp/` compute MAE, RMSE, MAPE and operational metrics (SLA 
 
 ## Data and ethics
 
-Datasets (e.g., Alibaba traces) must be anonymized. Do not commit raw traces or PII. See `EVALUATION_GUIDE.md` for dataset handling details.
+Datasets (e.g., Alibaba traces) must be anonymized. Do not commit raw traces or PII.
 
 ## Citation
 
