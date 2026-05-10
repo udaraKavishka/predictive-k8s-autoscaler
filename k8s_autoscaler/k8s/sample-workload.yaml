@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-workload
+  namespace: research-workload
+  labels:
+    app: sample-workload
+    research: autoscaler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-workload
+  template:
+    metadata:
+      labels:
+        app: sample-workload
+    spec:
+      containers:
+        - name: workload
+          image: nginx:1.25-alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          # Readiness probe ensures only healthy pods receive traffic
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-workload-svc
+  namespace: research-workload
+spec:
+  selector:
+    app: sample-workload
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+# Stress-ng Deployment — scaled by load_replayer.py to simulate Alibaba CPU demand
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-generator
+  namespace: research-workload
+  labels:
+    app: load-generator
+    research: autoscaler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: load-generator
+  template:
+    metadata:
+      labels:
+        app: load-generator
+    spec:
+      containers:
+        - name: stressor
+          image: alexeiled/stress-ng:latest
+          args:
+            - "--cpu"
+            - "1"
+            - "--cpu-load"
+            - "80"
+            - "--timeout"
+            - "0"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"

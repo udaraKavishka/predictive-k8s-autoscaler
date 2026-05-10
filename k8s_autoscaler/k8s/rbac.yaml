@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: autoscaler-sa
+  namespace: research-autoscaler
+---
+# ClusterRole: needs to read pods/metrics and patch Deployment scale
+# across the research-workload namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: autoscaler-role
+rules:
+  # Read Deployment spec and current replica count
+  - apiGroups: ["apps"]
+    resources: ["deployments", "deployments/scale"]
+    verbs: ["get", "list", "watch", "patch", "update"]
+  # Read pod info (for metric label matching)
+  - apiGroups: [""]
+    resources: ["pods", "namespaces"]
+    verbs: ["get", "list", "watch"]
+  # Read metrics (Kubernetes Metrics Server)
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: autoscaler-rolebinding
+subjects:
+  - kind: ServiceAccount
+    name: autoscaler-sa
+    namespace: research-autoscaler
+roleRef:
+  kind: ClusterRole
+  name: autoscaler-role
+  apiGroup: rbac.authorization.k8s.io

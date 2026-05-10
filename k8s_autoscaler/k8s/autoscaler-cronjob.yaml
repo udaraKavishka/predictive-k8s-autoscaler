@@ -1,0 +1,72 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: predictive-autoscaler
+  namespace: research-autoscaler
+  labels:
+    research: autoscaler
+spec:
+  # Run every 5 minutes — matches the 5-min interval in the research
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid      # Never run two instances simultaneously
+  successfulJobsHistoryLimit: 12 # Keep 1 hour of successful runs for evidence
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      # Allow up to 4 minutes for inference + API call (1 min buffer before next tick)
+      activeDeadlineSeconds: 240
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app: predictive-autoscaler
+        spec:
+          serviceAccountName: autoscaler-sa
+          restartPolicy: Never
+
+          # Mount the trained model from a PersistentVolumeClaim
+          # (see GCP_RESEARCH_GUIDE.md for how to upload your model)
+          volumes:
+            - name: model-volume
+              persistentVolumeClaim:
+                claimName: model-pvc
+
+          containers:
+            - name: autoscaler
+              image: us-central1-docker.pkg.dev/research-autoscaler-2026/research/autoscaler:v1
+              # ↑ Replace REGION, PROJECT_ID with your values after:
+              #   docker build -t ... && docker push ...
+
+              command: ["python", "autoscaler.py"]
+
+              envFrom:
+                - configMapRef:
+                    name: autoscaler-config
+
+              volumeMounts:
+                - name: model-volume
+                  mountPath: /model   # expects: hybrid_model_ewc_er.keras + 3 .pkl files
+                  readOnly: true
+
+              resources:
+                requests:
+                  cpu: "250m"
+                  memory: "512Mi"
+                limits:
+                  cpu: "1000m"
+                  memory: "1Gi"
+---
+# PersistentVolumeClaim to store the trained model file
+# After creating, upload your .h5 file using a temporary pod (see guide)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-pvc
+  namespace: research-autoscaler
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+  storageClassName: standard-rwo  # GKE default storage class

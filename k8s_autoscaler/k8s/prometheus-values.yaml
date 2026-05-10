@@ -1,0 +1,55 @@
+# Helm values for kube-prometheus-stack
+# Sized down for a research demo on 2× e2-small nodes
+# Install with:
+#   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+#   helm repo update
+#   helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+#     -n monitoring --create-namespace -f prometheus-values.yaml
+
+grafana:
+  enabled: true
+  adminPassword: "research2026"   # Change before any public exposure
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "128Mi"
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
+  # Useful dashboards for dissertation screenshots
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: "default"
+          orgId: 1
+          folder: "Research"
+          type: file
+          options:
+            path: /var/lib/grafana/dashboards/default
+
+prometheus:
+  prometheusSpec:
+    # Keep only 24 hours of data (research demo, not production)
+    retention: 24h
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "512Mi"
+      limits:
+        cpu: "500m"
+        memory: "1Gi"
+    # Scrape all namespaces (needed to see research-workload pods)
+    podMonitorNamespaceSelector:
+      matchLabels: {}
+    serviceMonitorNamespaceSelector:
+      matchLabels: {}
+
+alertmanager:
+  enabled: false   # Not needed for research demo
+
+nodeExporter:
+  enabled: true    # Needed for node-level CPU metrics
+
+kubeStateMetrics:
+  enabled: true    # Needed for deployment replica count metrics
