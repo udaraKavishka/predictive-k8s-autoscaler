@@ -82,7 +82,7 @@ def load_artifacts(model_dir: str):
     Returns (model, temporal_scaler, static_scaler, target_scaler).
     All four files must exist in model_dir — they are produced by research_imp_V2.py.
     """
-    import tensorflow as tf  # type: ignore
+    import keras  # type: ignore  # standalone Keras 3.x (not tf.keras)
 
     model_path    = os.path.join(model_dir, "hybrid_model_ewc_er.keras")
     t_scaler_path = os.path.join(model_dir, "temporal_scaler.pkl")
@@ -94,7 +94,7 @@ def load_artifacts(model_dir: str):
             raise FileNotFoundError(f"Required artifact missing: {path}")
 
     log.info(f"Loading model from {model_path}")
-    model = tf.keras.models.load_model(model_path, compile=False)
+    model = keras.models.load_model(model_path, compile=False)
 
     # These .pkl files were created by research_imp_V2.py with pickle.dump().
     # They are sklearn StandardScaler objects and are trusted researcher-produced files.
