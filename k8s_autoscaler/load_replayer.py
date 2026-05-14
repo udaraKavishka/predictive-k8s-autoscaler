@@ -52,9 +52,7 @@ CPU_PER_STRESS_POD = float(os.getenv("STRESS_CPU_PER_POD", "0.1"))
 MIN_PODS = 1
 MAX_PODS = 20
 
-# ---------------------------------------------------------------------------
 # Kubernetes helper
-# ---------------------------------------------------------------------------
 
 def get_k8s_apps_client():
     try:
@@ -85,9 +83,7 @@ def patch_replicas(apps_api, namespace: str, deployment: str, replicas: int, dry
         log.error(f"Patch failed: {exc}")
 
 
-# ---------------------------------------------------------------------------
 # Data loading
-# ---------------------------------------------------------------------------
 
 def load_trace(csv_path: str, app_name: str | None) -> pd.DataFrame:
     log.info(f"Loading trace from {csv_path}")
@@ -115,12 +111,13 @@ def load_trace(csv_path: str, app_name: str | None) -> pd.DataFrame:
     return app_df
 
 
-# ---------------------------------------------------------------------------
 # Main replay loop
-# ---------------------------------------------------------------------------
 
 def replay(args):
     df = load_trace(args.csv, args.app)
+    if args.max_steps is not None:
+        df = df.head(args.max_steps)
+        log.info(f"Limiting replay to {args.max_steps} steps (--max-steps)")
     apps_api = None if args.dry_run else get_k8s_apps_client()
 
     interval_real = 300.0 / args.speed  # wall-clock seconds between steps
@@ -175,9 +172,7 @@ def replay(args):
     )
 
 
-# ---------------------------------------------------------------------------
 # Entry point
-# ---------------------------------------------------------------------------
 
 def parse_args():
     p = argparse.ArgumentParser(description="Replay Alibaba trace as Kubernetes load")
@@ -190,6 +185,8 @@ def parse_args():
     p.add_argument("--dry-run",    action="store_true")
     p.add_argument("--log-file",   default="replay_log.csv",
                    help="Output CSV for replay evidence")
+    p.add_argument("--max-steps", type=int, default=None,
+                   help="Stop after this many steps (default: run all)")
     return p.parse_args()
 
 
