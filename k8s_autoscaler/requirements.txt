@@ -1,7 +1,5 @@
-numpy==1.26.4
+# Runtime dependencies (heavy ML deps are installed separately in Dockerfile)
 pandas==2.2.2
-scikit-learn==1.4.2
 kubernetes==29.0.0
 requests==2.31.0
 prometheus-api-client==0.5.5
-keras==3.4.1

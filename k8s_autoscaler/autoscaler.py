@@ -94,7 +94,38 @@ def load_artifacts(model_dir: str):
             raise FileNotFoundError(f"Required artifact missing: {path}")
 
     log.info(f"Loading model from {model_path}")
-    model = keras.models.load_model(model_path, compile=False)
+    try:
+        model = keras.models.load_model(model_path, compile=False)
+    except Exception as first_exc:
+        log.warning(
+            "Primary model load failed; retrying with compatibility Dense layer: %s",
+            first_exc,
+        )
+
+        class CompatDense(keras.layers.Dense):
+            """Backward-compatible Dense that ignores unsupported quantization_config."""
+
+            def __init__(self, *args, quantization_config=None, **kwargs):
+                del quantization_config
+                super().__init__(*args, **kwargs)
+
+        # Keras may reference Dense by different identifiers across versions.
+        compat_objects = {
+            "Dense": CompatDense,
+            "keras.layers.Dense": CompatDense,
+            "keras.src.layers.core.dense.Dense": CompatDense,
+        }
+
+        try:
+            model = keras.models.load_model(
+                model_path,
+                compile=False,
+                custom_objects=compat_objects,
+            )
+        except Exception as second_exc:
+            raise RuntimeError(
+                "Failed to load model after compatibility retry"
+            ) from second_exc
 
     # These .pkl files were created by research_imp_V2.py with pickle.dump().
     # They are sklearn StandardScaler objects and are trusted researcher-produced files.
