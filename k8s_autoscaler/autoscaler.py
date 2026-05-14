@@ -39,8 +39,10 @@ import json
 import logging
 import math
 import os
-import pickle  # required: scalers were saved by research_imp_V2.py using pickle.dump()
+import pickle  
 import sys
+import tempfile
+import zipfile
 from typing import Optional
 
 import numpy as np
@@ -77,13 +79,37 @@ ROLL_WINDOW    = 12   # 1-hour rolling window (matches cfg.roll_window in traini
 # ---------------------------------------------------------------------------
 # Load model + scalers
 # ---------------------------------------------------------------------------
+def _build_model(keras):
+    """Reconstruct model architecture — mirrors create_hybrid_model in research_imp_V3.py."""
+    from keras.layers import Input, LSTM, Dense, BatchNormalization, Dropout, concatenate
+    from keras.models import Model
+
+    lstm_input = Input(shape=(HISTORY_LENGTH, 10), name="temporal_input")
+    x = LSTM(128, return_sequences=True, dropout=0.2, name="lstm_128")(lstm_input)
+    x = LSTM(64,  return_sequences=True, dropout=0.2, name="lstm_64")(x)
+    x = LSTM(32, name="lstm_32")(x)
+    lstm_embed = Dense(16, activation="relu", name="lstm_embedding")(x)
+
+    mlp_input = Input(shape=(7,), name="static_input")
+    x = Dense(64, activation="relu", name="mlp_64")(mlp_input)
+    x = BatchNormalization(name="mlp_bn")(x)
+    x = Dropout(0.2, name="mlp_drop")(x)
+    x = Dense(32, activation="relu", name="mlp_32")(x)
+    mlp_embed = Dense(16, activation="relu", name="mlp_embedding")(x)
+
+    fused = concatenate([lstm_embed, mlp_embed], name="fusion")
+    fused = Dense(16, activation="relu", name="fusion_dense")(fused)
+    output = Dense(1, activation="linear", name="cpu_forecast")(fused)
+
+    return Model(inputs=[lstm_input, mlp_input], outputs=output)
+
+
 def load_artifacts(model_dir: str):
     """
     Returns (model, temporal_scaler, static_scaler, target_scaler).
     All four files must exist in model_dir — they are produced by research_imp_V2.py.
     """
-    import keras  # type: ignore  # standalone Keras 3.x (not tf.keras)
-
+    import keras  
     model_path    = os.path.join(model_dir, "hybrid_model_ewc_er.keras")
     t_scaler_path = os.path.join(model_dir, "temporal_scaler.pkl")
     s_scaler_path = os.path.join(model_dir, "static_scaler.pkl")
@@ -94,47 +120,20 @@ def load_artifacts(model_dir: str):
             raise FileNotFoundError(f"Required artifact missing: {path}")
 
     log.info(f"Loading model from {model_path}")
-    try:
-        model = keras.models.load_model(model_path, compile=False)
-    except Exception as first_exc:
-        log.warning(
-            "Primary model load failed; retrying with compatibility Dense layer: %s",
-            first_exc,
-        )
+    model = _build_model(keras)
+    with zipfile.ZipFile(model_path, "r") as zf:
+        with tempfile.TemporaryDirectory() as tmp:
+            zf.extract("model.weights.h5", tmp)
+            model.load_weights(os.path.join(tmp, "model.weights.h5"))
+    log.info("Model weights loaded successfully")
 
-        class CompatDense(keras.layers.Dense):
-            """Backward-compatible Dense that ignores unsupported quantization_config."""
 
-            def __init__(self, *args, quantization_config=None, **kwargs):
-                del quantization_config
-                super().__init__(*args, **kwargs)
-
-        # Keras may reference Dense by different identifiers across versions.
-        compat_objects = {
-            "Dense": CompatDense,
-            "keras.layers.Dense": CompatDense,
-            "keras.src.layers.core.dense.Dense": CompatDense,
-        }
-
-        try:
-            model = keras.models.load_model(
-                model_path,
-                compile=False,
-                custom_objects=compat_objects,
-            )
-        except Exception as second_exc:
-            raise RuntimeError(
-                "Failed to load model after compatibility retry"
-            ) from second_exc
-
-    # These .pkl files were created by research_imp_V2.py with pickle.dump().
-    # They are sklearn StandardScaler objects and are trusted researcher-produced files.
     with open(t_scaler_path, "rb") as fh:
-        temporal_scaler = pickle.load(fh)  # noqa: S301
+        temporal_scaler = pickle.load(fh)  
     with open(s_scaler_path, "rb") as fh:
-        static_scaler = pickle.load(fh)  # noqa: S301
+        static_scaler = pickle.load(fh)  
     with open(y_scaler_path, "rb") as fh:
-        target_scaler = pickle.load(fh)  # noqa: S301
+        target_scaler = pickle.load(fh)  
 
     log.info("Model and all three scalers loaded")
     return model, temporal_scaler, static_scaler, target_scaler
@@ -223,7 +222,7 @@ def fetch_cpu_history(namespace: str, deployment: str) -> Optional[np.ndarray]:
     Returns raw vCPU values (not scaled), shape (HISTORY_LENGTH,), or None.
     """
     try:
-        import requests  # type: ignore
+        import requests  
     except ImportError:
         log.error("requests library not installed")
         return None
@@ -240,7 +239,7 @@ def fetch_cpu_history(namespace: str, deployment: str) -> Optional[np.ndarray]:
     )
 
     try:
-        import requests  # type: ignore  # noqa: F811
+        import requests  
         resp = requests.get(
             f"{PROMETHEUS_URL}/api/v1/query_range",
             params={
