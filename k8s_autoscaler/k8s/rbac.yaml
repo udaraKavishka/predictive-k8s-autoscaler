@@ -4,6 +4,12 @@ metadata:
   name: autoscaler-sa
   namespace: research-autoscaler
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: autoscaler-sa
+  namespace: research-workload
+---
 # ClusterRole: needs to read pods/metrics and patch Deployment scale
 # across the research-workload namespace
 apiVersion: rbac.authorization.k8s.io/v1
@@ -32,6 +38,19 @@ subjects:
   - kind: ServiceAccount
     name: autoscaler-sa
     namespace: research-autoscaler
+roleRef:
+  kind: ClusterRole
+  name: autoscaler-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: autoscaler-rolebinding-workload
+subjects:
+  - kind: ServiceAccount
+    name: autoscaler-sa
+    namespace: research-workload
 roleRef:
   kind: ClusterRole
   name: autoscaler-role

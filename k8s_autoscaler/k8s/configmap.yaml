@@ -4,11 +4,11 @@ metadata:
   name: autoscaler-config
   namespace: research-autoscaler
 data:
-  # ── Target workload ───────────────────────────────────────────────────────
+  #  Target workload 
   TARGET_NAMESPACE:  "research-workload"
   TARGET_DEPLOYMENT: "sample-workload"
 
-  # ── Scaling parameters ────────────────────────────────────────────────────
+  #  Scaling parameters 
   # CPU allocated per replica of the target Deployment (in vCPU cores)
   CPU_PER_REPLICA:  "0.1"
   MIN_REPLICAS:     "1"
@@ -16,17 +16,17 @@ data:
   # Safety over-provisioning margin (15% matches the SLA_TOL in research)
   SLA_TOLERANCE:    "0.15"
 
-  # ── Model directory (contains hybrid_model_ewc_er.keras + 3 .pkl scalers) ─
+  #  Model directory (contains hybrid_model_ewc_er.keras + 3 .pkl scalers) ─
   MODEL_DIR:        "/model"
   HISTORY_LENGTH:   "24"     # 2-hour look-back (24 × 5-min steps)
   FORECAST_STEPS:   "6"      # 30-min horizon
   INTERVAL_SEC:     "300"    # 5-minute resolution
 
-  # ── Prometheus ────────────────────────────────────────────────────────────
+  #  Prometheus 
   # Adjust this URL to match your Prometheus service name
   PROMETHEUS_URL:   "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
 
-  # ── Static features (MLP branch — workload characteristics) ───────────────
+  # ── Static features (MLP branch — workload characteristics) 
   STATIC_GPU_REQUEST:    "0.0"
   STATIC_MEM_GIB:        "0.128"
   STATIC_RDMA:           "0.0"
@@ -34,6 +34,32 @@ data:
   STATIC_INSTANCE_COUNT: "1.0"
   STATIC_MAX_PER_NODE:   "0.0"
 
-  # ── Misc ──────────────────────────────────────────────────────────────────
+  #  Misc 
+  DRY_RUN:  "false"
+  LOG_FILE: "/var/log/autoscaler.log"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: autoscaler-config
+  namespace: research-workload
+data:
+  TARGET_NAMESPACE:  "research-workload"
+  TARGET_DEPLOYMENT: "sample-workload"
+  CPU_PER_REPLICA:  "0.1"
+  MIN_REPLICAS:     "1"
+  MAX_REPLICAS:     "10"
+  SLA_TOLERANCE:    "0.15"
+  MODEL_DIR:        "/model"
+  HISTORY_LENGTH:   "24"
+  FORECAST_STEPS:   "6"
+  INTERVAL_SEC:     "300"
+  PROMETHEUS_URL:   "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
+  STATIC_GPU_REQUEST:    "0.0"
+  STATIC_MEM_GIB:        "0.128"
+  STATIC_RDMA:           "0.0"
+  STATIC_HN_FRACTION:    "0.0"
+  STATIC_INSTANCE_COUNT: "1.0"
+  STATIC_MAX_PER_NODE:   "0.0"
   DRY_RUN:  "false"
   LOG_FILE: "/var/log/autoscaler.log"

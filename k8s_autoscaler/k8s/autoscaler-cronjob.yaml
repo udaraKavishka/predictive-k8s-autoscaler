@@ -25,7 +25,6 @@ spec:
           restartPolicy: Never
 
           # Mount the trained model from a PersistentVolumeClaim
-          # (see GCP_RESEARCH_GUIDE.md for how to upload your model)
           volumes:
             - name: model-volume
               persistentVolumeClaim:
@@ -33,7 +32,7 @@ spec:
 
           containers:
             - name: autoscaler
-              image: us-central1-docker.pkg.dev/research-autoscaler-2026/research/autoscaler:v1-fixed
+              image: us-central1-docker.pkg.dev/research-autoscaler-2026/research/autoscaler:v1
               imagePullPolicy: Always
               # ↑ Replace REGION, PROJECT_ID with your values after:
               #   docker build -t ... && docker push ...
@@ -58,7 +57,6 @@ spec:
                   memory: "1Gi"
 ---
 # PersistentVolumeClaim to store the trained model file
-# After creating, upload your .h5 file using a temporary pod (see guide)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
