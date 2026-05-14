@@ -1,0 +1,49 @@
+# Lightweight Loki (single binary mode) for research on 3 × e2-small nodes
+# Uses the new grafana/loki chart (loki-stack is deprecated)
+# Tuned for cost efficiency and minimal resource usage
+
+deploymentMode: SingleBinary
+
+loki:
+  auth_enabled: false
+  commonConfig:
+    replication_factor: 1
+  storage:
+    type: filesystem
+  schemaConfig:
+    configs:
+      - from: "2024-01-01"
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+
+singleBinary:
+  replicas: 1
+  persistence:
+    enabled: true
+    size: 2Gi
+    storageClass: standard-rwo
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Disable HA/distributed components (overkill for research)
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
+
+# Disable bundled components
+gateway:
+  enabled: false
+minio:
+  enabled: false

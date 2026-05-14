@@ -1,0 +1,14 @@
+# Promtail configuration — log collection for research
+# Separate chart from loki (new architecture)
+
+config:
+  clients:
+    - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

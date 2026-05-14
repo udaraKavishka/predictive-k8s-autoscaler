@@ -33,7 +33,8 @@ spec:
 
           containers:
             - name: autoscaler
-              image: us-central1-docker.pkg.dev/research-autoscaler-2026/research/autoscaler:v1
+              image: us-central1-docker.pkg.dev/research-autoscaler-2026/research/autoscaler:v1-fixed
+              imagePullPolicy: Always
               # ↑ Replace REGION, PROJECT_ID with your values after:
               #   docker build -t ... && docker push ...
 
