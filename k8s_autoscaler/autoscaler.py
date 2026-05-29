@@ -259,10 +259,13 @@ def fetch_cpu_history(namespace: str, deployment: str) -> Optional[np.ndarray]:
         values = [float(v[1]) for v in results[0]["values"]]
         if len(values) < HISTORY_LENGTH:
             log.warning(
-                f"Only {len(values)} Prometheus samples, need {HISTORY_LENGTH} — padding"
+                f"Only {len(values)} Prometheus samples, need {HISTORY_LENGTH} "
+                f"— insufficient history for model; will use reactive fallback"
             )
-            pad = values[0] if values else 0.0
-            values = [pad] * (HISTORY_LENGTH - len(values)) + values
+            # Do NOT pad with zeros — zero-padding corrupts the LSTM temporal
+            # features and causes wildly wrong predictions.  Return None so the
+            # caller falls back to reactive scaling until we have enough history.
+            return None
 
         return np.array(values[-HISTORY_LENGTH:], dtype=np.float32)
 
@@ -396,15 +399,32 @@ def main():
         try:
             predicted_cpu    = predict_cpu_demand(model, temporal_scaler, static_scaler,
                                                   target_scaler, cpu_history)
-            provisioned_cpu  = predicted_cpu * (1.0 + SLA_TOLERANCE)
-            desired          = max(MIN_REPLICAS, min(MAX_REPLICAS,
-                                   math.ceil(provisioned_cpu / CPU_PER_REPLICA)))
-            method           = "predictive"
-            log.info(
-                f"Predicted t+30min CPU: {predicted_cpu:.4f} vCPU "
-                f"(+{SLA_TOLERANCE*100:.0f}% -> {provisioned_cpu:.4f}) "
-                f"-> {desired} replicas"
-            )
+
+            # Sanity check: sklearn version mismatch (scalers saved with 1.8.0, loaded
+            # with 1.4.2) can cause inverse_transform to return values hundreds of times
+            # larger than reality.  Cap at 50× the observed current CPU; anything above
+            # that is a scaler artifact, not a real prediction.
+            current_cpu_val = float(cpu_history[-1])
+            sanity_cap = max(1.0, current_cpu_val * 50)
+            if predicted_cpu > sanity_cap:
+                log.warning(
+                    f"Prediction {predicted_cpu:.2f} vCPU exceeds sanity cap "
+                    f"{sanity_cap:.2f} (50× current {current_cpu_val:.4f}) — "
+                    f"likely sklearn version mismatch; falling back to reactive"
+                )
+                predicted_cpu = current_cpu_val
+                desired       = reactive_scale(predicted_cpu)
+                method        = "reactive-fallback-sanity"
+            else:
+                provisioned_cpu  = predicted_cpu * (1.0 + SLA_TOLERANCE)
+                desired          = max(MIN_REPLICAS, min(MAX_REPLICAS,
+                                       math.ceil(provisioned_cpu / CPU_PER_REPLICA)))
+                method           = "predictive"
+                log.info(
+                    f"Predicted t+30min CPU: {predicted_cpu:.4f} vCPU "
+                    f"(+{SLA_TOLERANCE*100:.0f}% -> {provisioned_cpu:.4f}) "
+                    f"-> {desired} replicas"
+                )
         except Exception as exc:
             log.warning(f"Prediction failed ({exc}) -- falling back to reactive")
             predicted_cpu = float(cpu_history[-1])
@@ -443,4 +463,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as exc:
+        log.critical("Unhandled exception — autoscaler crashed", exc_info=True)
+        sys.exit(1)
