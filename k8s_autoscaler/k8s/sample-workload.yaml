@@ -80,7 +80,7 @@ spec:
             - "0"
           resources:
             requests:
-              cpu: "100m"
+              cpu: "50m"     # scheduling overhead halved; stress-ng still runs at --cpu-load 80
               memory: "64Mi"
             limits:
               cpu: "200m"

@@ -50,10 +50,10 @@ spec:
 
               resources:
                 requests:
-                  cpu: "250m"
-                  memory: "512Mi"
+                  cpu: "100m"    # low request so pod fits alongside load-generators
+                  memory: "256Mi"
                 limits:
-                  cpu: "1000m"
+                  cpu: "1000m"   # burst budget for TF inference
                   memory: "1Gi"
 ---
 # PersistentVolumeClaim to store the trained model file

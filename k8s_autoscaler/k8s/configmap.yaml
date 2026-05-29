@@ -6,7 +6,7 @@ metadata:
 data:
   #  Target workload 
   TARGET_NAMESPACE:  "research-workload"
-  TARGET_DEPLOYMENT: "sample-workload"
+  TARGET_DEPLOYMENT: "load-generator"   # monitors stress-ng CPU (real signal)
 
   #  Scaling parameters 
   # CPU allocated per replica of the target Deployment (in vCPU cores)
@@ -45,7 +45,7 @@ metadata:
   namespace: research-workload
 data:
   TARGET_NAMESPACE:  "research-workload"
-  TARGET_DEPLOYMENT: "sample-workload"
+  TARGET_DEPLOYMENT: "load-generator"   # monitors stress-ng CPU (real signal)
   CPU_PER_REPLICA:  "0.1"
   MIN_REPLICAS:     "1"
   MAX_REPLICAS:     "10"
