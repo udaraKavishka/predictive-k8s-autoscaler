@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN python -m pip install --no-cache-dir --retries 5 \
     tensorflow==2.17.0 \
     keras==3.4.1 \
     numpy==1.26.4 \
-    scikit-learn==1.4.2
+    scikit-learn==1.8.0
 
 # Install lighter runtime dependencies
 COPY requirements.txt .
