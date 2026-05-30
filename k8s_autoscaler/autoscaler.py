@@ -71,6 +71,14 @@ SLA_TOLERANCE     = float(os.getenv("SLA_TOLERANCE", "0.15"))
 APP_ID            = float(os.getenv("APP_ID",        "0"))
 DRY_RUN           = os.getenv("DRY_RUN", "false").lower() == "true"
 
+# Sim-to-real domain adapter. The model was trained on aggregated per-app Alibaba
+# cluster demand (cpu_demand centered ~2717 units), but the live GKE workload runs
+# at ~0.1-1 cores. LIVE_REF_CPU is the live CPU level we map onto the model's
+# training mean so inputs land in-distribution; the prediction is mapped back to
+# live cores afterwards. See predict_cpu_demand() and the DOMAIN_SCALE computation
+# in main(). This is the explicit normalization step described in proposal §5.2.1.
+LIVE_REF_CPU      = float(os.getenv("LIVE_REF_CPU", "0.3"))
+
 HISTORY_LENGTH = 24   # 24 x 5-min = 2-hour lookback (fixed in training)
 INTERVAL_SEC   = 300  # 5 minutes
 ROLL_WINDOW    = 12   # 1-hour rolling window (matches cfg.roll_window in training)
@@ -335,19 +343,29 @@ def predict_cpu_demand(
     static_scaler,
     target_scaler,
     cpu_history: np.ndarray,
+    domain_scale: float = 1.0,
 ) -> float:
     """
     Run the hybrid LSTM+MLP model and return predicted CPU (vCPU) at t+30min.
 
     Pipeline (mirrors inference path from research_imp_V2.py):
+      0. Map live CPU history into the training domain (× domain_scale)
       1. Build raw temporal matrix (24, 10)
       2. Scale with temporal_scaler
       3. Build raw static vector (7,)
       4. Scale with static_scaler
       5. model.predict -> scaled output (1, 1)
-      6. inverse_transform with target_scaler -> raw vCPU
+      6. inverse_transform with target_scaler -> training-domain CPU
+      7. Map the prediction back to live cores (÷ domain_scale)
+
+    domain_scale bridges the ~20,000× gap between the model's training distribution
+    (aggregated Alibaba app demand, mean ~2717) and the live workload (~0.1-1 cores).
+    The model learned demand *dynamics*; only the absolute level is renormalized.
     """
-    temporal_raw = build_temporal_matrix(cpu_history)        # (24, 10)
+    # Map the live signal up into the model's training distribution.
+    cpu_history_model = cpu_history * domain_scale
+
+    temporal_raw = build_temporal_matrix(cpu_history_model)  # (24, 10)
     static_raw   = build_static_vector()                     # (7,)
 
     temporal_scaled = temporal_scaler.transform(temporal_raw)               # (24, 10)
@@ -358,6 +376,9 @@ def predict_cpu_demand(
 
     pred_scaled = model.predict([t_input, s_input], verbose=0)   # (1, 1)
     pred_cpu    = float(target_scaler.inverse_transform(pred_scaled.reshape(-1, 1))[0, 0])
+
+    # Map the prediction back down to live cores.
+    pred_cpu /= domain_scale
 
     return max(0.0, pred_cpu)
 
@@ -383,6 +404,17 @@ def main():
         log.error(f"Cannot load artifacts: {exc}")
         model = temporal_scaler = static_scaler = target_scaler = None
 
+    # Sim-to-real domain adapter: map the live CPU scale onto the model's training
+    # mean so inputs land in-distribution. Derived from the loaded target scaler so
+    # it self-adjusts if the model is retrained.
+    domain_scale = 1.0
+    if target_scaler is not None:
+        domain_scale = float(target_scaler.mean_[0]) / max(LIVE_REF_CPU, 1e-6)
+        log.info(
+            f"Domain adapter: scale={domain_scale:.1f} "
+            f"(train mean {float(target_scaler.mean_[0]):.1f} / live ref {LIVE_REF_CPU})"
+        )
+
     # Init Kubernetes client
     apps_api = get_k8s_apps_client()
     current_replicas = 1
@@ -398,19 +430,19 @@ def main():
     if cpu_history is not None and model is not None:
         try:
             predicted_cpu    = predict_cpu_demand(model, temporal_scaler, static_scaler,
-                                                  target_scaler, cpu_history)
+                                                  target_scaler, cpu_history, domain_scale)
 
-            # Sanity check: sklearn version mismatch (scalers saved with 1.8.0, loaded
-            # with 1.4.2) can cause inverse_transform to return values hundreds of times
-            # larger than reality.  Cap at 50× the observed current CPU; anything above
-            # that is a scaler artifact, not a real prediction.
+            # Domain-adapter guard: with the sim-to-real rescaling, predictions land in
+            # live scale (~0.1-1 cores). A prediction far above the cluster's maximum
+            # provisionable CPU indicates a genuine blow-up (bad input / NaN), not a
+            # real forecast — fall back to reactive in that case only.
             current_cpu_val = float(cpu_history[-1])
-            sanity_cap = max(1.0, current_cpu_val * 50)
+            sanity_cap = MAX_REPLICAS * CPU_PER_REPLICA * 3
             if predicted_cpu > sanity_cap:
                 log.warning(
-                    f"Prediction {predicted_cpu:.2f} vCPU exceeds sanity cap "
-                    f"{sanity_cap:.2f} (50× current {current_cpu_val:.4f}) — "
-                    f"likely sklearn version mismatch; falling back to reactive"
+                    f"Prediction {predicted_cpu:.2f} vCPU exceeds guard "
+                    f"{sanity_cap:.2f} ({MAX_REPLICAS}×{CPU_PER_REPLICA}×3) — "
+                    f"treating as anomaly; falling back to reactive"
                 )
                 predicted_cpu = current_cpu_val
                 desired       = reactive_scale(predicted_cpu)

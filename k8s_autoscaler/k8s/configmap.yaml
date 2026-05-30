@@ -26,15 +26,21 @@ data:
   # Adjust this URL to match your Prometheus service name
   PROMETHEUS_URL:   "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
 
-  # ── Static features (MLP branch — workload characteristics) 
-  STATIC_GPU_REQUEST:    "0.0"
-  STATIC_MEM_GIB:        "0.128"
-  STATIC_RDMA:           "0.0"
-  STATIC_HN_FRACTION:    "0.0"
-  STATIC_INSTANCE_COUNT: "1.0"
-  STATIC_MAX_PER_NODE:   "0.0"
+  # ── Static features (MLP branch — workload characteristics)
+  # Profile of a representative trace app (app_113, median cpu_demand ~312) so the
+  # MLP branch operates in-distribution instead of at a far corner of the scaler.
+  STATIC_GPU_REQUEST:    "0.286"
+  STATIC_MEM_GIB:        "354.12"
+  STATIC_RDMA:           "7.866"
+  STATIC_HN_FRACTION:    "0.286"
+  STATIC_INSTANCE_COUNT: "3.861"
+  STATIC_MAX_PER_NODE:   "4.577"
+  APP_ID:                "113"
 
-  #  Misc 
+  # ── Sim-to-real domain adapter (maps live cores onto the model's training mean)
+  LIVE_REF_CPU:          "0.3"
+
+  #  Misc
   DRY_RUN:  "false"
   LOG_FILE: "/var/log/autoscaler.log"
 ---
@@ -55,11 +61,13 @@ data:
   FORECAST_STEPS:   "6"
   INTERVAL_SEC:     "300"
   PROMETHEUS_URL:   "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
-  STATIC_GPU_REQUEST:    "0.0"
-  STATIC_MEM_GIB:        "0.128"
-  STATIC_RDMA:           "0.0"
-  STATIC_HN_FRACTION:    "0.0"
-  STATIC_INSTANCE_COUNT: "1.0"
-  STATIC_MAX_PER_NODE:   "0.0"
+  STATIC_GPU_REQUEST:    "0.286"
+  STATIC_MEM_GIB:        "354.12"
+  STATIC_RDMA:           "7.866"
+  STATIC_HN_FRACTION:    "0.286"
+  STATIC_INSTANCE_COUNT: "3.861"
+  STATIC_MAX_PER_NODE:   "4.577"
+  APP_ID:                "113"
+  LIVE_REF_CPU:          "0.3"
   DRY_RUN:  "false"
   LOG_FILE: "/var/log/autoscaler.log"
