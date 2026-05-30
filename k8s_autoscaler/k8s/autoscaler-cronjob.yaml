@@ -13,8 +13,8 @@ spec:
   failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
-      # Allow up to 4 minutes for inference + API call (1 min buffer before next tick)
-      activeDeadlineSeconds: 240
+      # TF startup ~90s + model load ~30s + inference + API = allow 8 minutes
+      activeDeadlineSeconds: 480
       backoffLimit: 1
       template:
         metadata:
