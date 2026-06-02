@@ -1,0 +1,12 @@
+{"timestamp": "2026-06-01T05:50:08.084816Z", "current_cpu": 0.16024364531040192, "predicted_cpu": 0.19411962204677352, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T05:55:12.906368Z", "current_cpu": 0.16534219682216644, "predicted_cpu": 0.19433371652012327, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T06:00:09.203790Z", "current_cpu": 0.1595361977815628, "predicted_cpu": 0.19520071356408558, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T06:05:08.634982Z", "current_cpu": 0.1591084599494934, "predicted_cpu": 0.1943482302576318, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T06:10:09.854732Z", "current_cpu": 0.15524816513061523, "predicted_cpu": 0.1945478244695524, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T06:15:08.456758Z", "current_cpu": 0.161576509475708, "predicted_cpu": 0.19342860912363166, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T06:20:12.933612Z", "current_cpu": 0.16353775560855865, "predicted_cpu": 0.19542359444120092, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T06:25:09.074298Z", "current_cpu": 0.160601407289505, "predicted_cpu": 0.19485416270636152, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T06:30:07.182661Z", "current_cpu": 0.16264572739601135, "predicted_cpu": 0.19413724875862232, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T06:35:11.860624Z", "current_cpu": 0.16331040859222412, "predicted_cpu": 0.19399451012566954, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T06:40:07.081755Z", "current_cpu": 0.16258834302425385, "predicted_cpu": 0.1939904942540098, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}
+{"timestamp": "2026-06-01T06:45:13.437919Z", "current_cpu": 0.16528171300888062, "predicted_cpu": 0.19421604339484538, "old_replicas": 3, "new_replicas": 3, "method": "predictive"}

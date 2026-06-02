@@ -1,0 +1,22 @@
+=== research-workload ===
+NAME                               READY   STATUS    RESTARTS   AGE   IP           NODE                                                 NOMINATED NODE   READINESS GATES
+load-generator-55c4597646-hz8d6    1/1     Running   0          36h   10.96.3.12   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+load-generator-55c4597646-p9pvw    1/1     Running   0          34h   10.96.1.10   gke-research-autoscaler-default-pool-cc6226da-q6sy   <none>           <none>
+load-generator-55c4597646-wxqc6    1/1     Running   0          32h   10.96.2.18   gke-research-autoscaler-default-pool-cc6226da-1r4g   <none>           <none>
+sample-workload-69d79fb496-sr697   1/1     Running   0          36h   10.96.3.9    gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+
+=== research-autoscaler ===
+NAME                                   READY   STATUS      RESTARTS   AGE     IP            NODE                                                 NOMINATED NODE   READINESS GATES
+predictive-autoscaler-29671555-t4x8w   0/1     Completed   0          60m     10.96.3.199   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671560-h28ts   0/1     Completed   0          55m     10.96.3.200   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671565-djgw6   0/1     Completed   0          50m     10.96.3.201   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671570-g7spd   0/1     Completed   0          45m     10.96.3.202   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671575-82kgc   0/1     Completed   0          40m     10.96.3.203   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671580-826gz   0/1     Completed   0          35m     10.96.3.204   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671585-xdgfc   0/1     Completed   0          30m     10.96.3.205   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671590-g5rrj   0/1     Completed   0          25m     10.96.3.206   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671595-ng92n   0/1     Completed   0          20m     10.96.3.207   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671600-pj89r   0/1     Completed   0          15m     10.96.3.208   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671605-766lj   0/1     Completed   0          10m     10.96.3.209   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671610-kblhs   0/1     Completed   0          5m17s   10.96.3.210   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29671615-29r87   1/1     Running     0          17s     10.96.3.211   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>

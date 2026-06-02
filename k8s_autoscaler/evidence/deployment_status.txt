@@ -1,0 +1,3 @@
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                       SELECTOR
+load-generator    3/3     3            3           2d22h   stressor     alexeiled/stress-ng:latest   app=load-generator
+sample-workload   1/1     1            1           2d22h   workload     nginx:1.25-alpine            app=sample-workload
