@@ -9,7 +9,7 @@ spec:
   # Run every 5 minutes — matches the 5-min interval in the research
   schedule: "*/5 * * * *"
   concurrencyPolicy: Forbid      # Never run two instances simultaneously
-  successfulJobsHistoryLimit: 12 # Keep 1 hour of successful runs for evidence
+  successfulJobsHistoryLimit: 60 # Keep ~5 hours of runs so a full ramp survives in decisions.csv (was 12 ≈ 1h, which truncated the scale-up)
   failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
