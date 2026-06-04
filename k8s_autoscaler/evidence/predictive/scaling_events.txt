@@ -1,0 +1,20 @@
+LAST SEEN   TYPE      REASON                 OBJECT                                 MESSAGE
+37m         Warning   NodeNotReady           pod/sample-workload-69d79fb496-sr697   Node is not ready
+35m         Warning   Unhealthy              pod/sample-workload-69d79fb496-sr697   Readiness probe failed: Get "http://10.96.3.9:80/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+34m         Normal    TaintManagerEviction   pod/sample-workload-69d79fb496-sr697   Cancelling deletion of Pod research-workload/sample-workload-69d79fb496-sr697
+28m         Normal    SuccessfulCreate       replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-k5rk6
+28m         Normal    Scheduled              pod/load-generator-55c4597646-k5rk6    Successfully assigned research-workload/load-generator-55c4597646-k5rk6 to gke-research-autoscaler-default-pool-cc6226da-1lgg
+28m         Normal    Pulling                pod/load-generator-55c4597646-k5rk6    Pulling image "alexeiled/stress-ng:latest"
+28m         Normal    Pulled                 pod/load-generator-55c4597646-k5rk6    Successfully pulled image "alexeiled/stress-ng:latest" in 331ms (332ms including waiting). Image size: 3939132 bytes.
+28m         Normal    Created                pod/load-generator-55c4597646-k5rk6    Container created
+28m         Normal    Started                pod/load-generator-55c4597646-k5rk6    Container started
+18m         Normal    ScalingReplicaSet      deployment/load-generator              Scaled down replica set load-generator-55c4597646 from 2 to 1
+18m         Normal    SuccessfulDelete       replicaset/load-generator-55c4597646   Deleted pod: load-generator-55c4597646-k5rk6
+18m         Normal    Killing                pod/load-generator-55c4597646-k5rk6    Stopping container stressor
+8m47s       Normal    SuccessfulCreate       replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-xxdpf
+8m47s       Normal    ScalingReplicaSet      deployment/load-generator              Scaled up replica set load-generator-55c4597646 from 1 to 2
+8m46s       Normal    Scheduled              pod/load-generator-55c4597646-xxdpf    Successfully assigned research-workload/load-generator-55c4597646-xxdpf to gke-research-autoscaler-default-pool-cc6226da-1lgg
+8m43s       Normal    Started                pod/load-generator-55c4597646-xxdpf    Container started
+8m43s       Normal    Created                pod/load-generator-55c4597646-xxdpf    Container created
+8m43s       Normal    Pulled                 pod/load-generator-55c4597646-xxdpf    Successfully pulled image "alexeiled/stress-ng:latest" in 276ms (289ms including waiting). Image size: 3939132 bytes.
+8m43s       Normal    Pulling                pod/load-generator-55c4597646-xxdpf    Pulling image "alexeiled/stress-ng:latest"

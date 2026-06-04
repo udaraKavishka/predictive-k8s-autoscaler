@@ -1,0 +1,11 @@
+{"timestamp": "2026-06-03T08:45:07.798059Z", "current_cpu": 0.0493607334792614, "predicted_cpu": 0.06638136130555863, "old_replicas": 1, "new_replicas": 1, "method": "predictive"}
+{"timestamp": "2026-06-03T08:50:12.646606Z", "current_cpu": 0.16442911326885223, "predicted_cpu": 0.056053590530910795, "old_replicas": 1, "new_replicas": 1, "method": "predictive"}
+{"timestamp": "2026-06-03T08:55:09.038336Z", "current_cpu": 0.1646369844675064, "predicted_cpu": 0.07703664123774526, "old_replicas": 1, "new_replicas": 1, "method": "predictive"}
+{"timestamp": "2026-06-03T09:00:08.711866Z", "current_cpu": 0.16434088349342346, "predicted_cpu": 0.06757402128418259, "old_replicas": 1, "new_replicas": 1, "method": "predictive"}
+{"timestamp": "2026-06-03T09:05:12.637544Z", "current_cpu": 0.15946707129478455, "predicted_cpu": 0.07932435395193459, "old_replicas": 1, "new_replicas": 1, "method": "predictive"}
+{"timestamp": "2026-06-03T09:15:36.658727Z", "current_cpu": 0.15861107409000397, "predicted_cpu": 0.07284877437668989, "old_replicas": 1, "new_replicas": 1, "method": "predictive"}
+{"timestamp": "2026-06-03T09:20:13.513764Z", "current_cpu": 0.16427215933799744, "predicted_cpu": 0.14692963974031378, "old_replicas": 1, "new_replicas": 2, "method": "predictive"}
+{"timestamp": "2026-06-03T09:25:09.131879Z", "current_cpu": 0.1621970385313034, "predicted_cpu": 0.1107590340791371, "old_replicas": 2, "new_replicas": 2, "method": "predictive"}
+{"timestamp": "2026-06-03T09:30:07.822877Z", "current_cpu": 0.16289518773555756, "predicted_cpu": 0.06965510527300706, "old_replicas": 2, "new_replicas": 1, "method": "predictive"}
+{"timestamp": "2026-06-03T09:35:11.795325Z", "current_cpu": 0.08902062475681305, "predicted_cpu": 0.07299690344140068, "old_replicas": 1, "new_replicas": 1, "method": "predictive"}
+{"timestamp": "2026-06-03T09:40:07.926764Z", "current_cpu": 0.1646118313074112, "predicted_cpu": 0.15452952861949057, "old_replicas": 1, "new_replicas": 2, "method": "predictive"}

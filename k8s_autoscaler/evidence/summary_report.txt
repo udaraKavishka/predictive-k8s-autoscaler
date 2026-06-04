@@ -1,27 +1,32 @@
 ============================================================
   Kubernetes Simulation — Evidence Summary
-  Generated: 2026-06-01T12:25:20.673156
+  Generated: 2026-06-03T17:37:29.428049
 ============================================================
 
-Total autoscaler decisions   : 12
-Predictive decisions         : 12  (100.0%)
+Total autoscaler decisions   : 38
+Predictive decisions         : 38  (100.0%)
 Reactive fallback decisions  : 0   (0.0%)
 
 Method breakdown:
-  predictive                          12
+  predictive                          38
 
-Max replicas reached         : 3
-Min replicas reached         : 3
-Scale-up   events            : 0
-Scale-down events            : 0
+Max replicas reached         : 2
+Min replicas reached         : 1
+Scale-up   events            : 6
+Scale-down events            : 6
 
 Output files:
   evidence/autoscaler_decisions.log
   evidence/decisions.csv
   evidence/decisions.jsonl
   evidence/deployment_status.txt
+  evidence/fig1_cpu_demand_curve.png
+  evidence/fig2_replica_count.png
+  evidence/fig3_load_generator_cpu.png
+  evidence/fig4_cluster_utilisation.png
   evidence/job_history.txt
   evidence/pod_status.txt
+  evidence/predictive
   evidence/prometheus_cpu.json
   evidence/prometheus_load_generator_cpu.json
   evidence/prometheus_replicas.json

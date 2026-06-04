@@ -1,0 +1,16 @@
+NAME                             STATUS     COMPLETIONS   DURATION   AGE
+predictive-autoscaler-29667410   Failed     0/1           5d         5d
+predictive-autoscaler-29667415   Failed     0/1           5d         5d
+predictive-autoscaler-29667420   Failed     0/1           5d         5d
+predictive-autoscaler-29674610   Complete   1/1           66s        59m
+predictive-autoscaler-29674615   Complete   1/1           50s        54m
+predictive-autoscaler-29674620   Complete   1/1           36s        49m
+predictive-autoscaler-29674625   Complete   1/1           2m34s      44m
+predictive-autoscaler-29674630   Complete   1/1           4m52s      39m
+predictive-autoscaler-29674635   Complete   1/1           3m13s      34m
+predictive-autoscaler-29674640   Complete   1/1           39s        29m
+predictive-autoscaler-29674645   Complete   1/1           45s        24m
+predictive-autoscaler-29674650   Complete   1/1           99s        19m
+predictive-autoscaler-29674655   Complete   1/1           39s        14m
+predictive-autoscaler-29674660   Complete   1/1           34s        9m19s
+predictive-autoscaler-29674665   Complete   1/1           42s        4m19s

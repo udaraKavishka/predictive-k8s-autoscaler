@@ -1,22 +1,47 @@
 === research-workload ===
-NAME                               READY   STATUS    RESTARTS   AGE   IP           NODE                                                 NOMINATED NODE   READINESS GATES
-load-generator-55c4597646-hz8d6    1/1     Running   0          36h   10.96.3.12   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-load-generator-55c4597646-p9pvw    1/1     Running   0          34h   10.96.1.10   gke-research-autoscaler-default-pool-cc6226da-q6sy   <none>           <none>
-load-generator-55c4597646-wxqc6    1/1     Running   0          32h   10.96.2.18   gke-research-autoscaler-default-pool-cc6226da-1r4g   <none>           <none>
-sample-workload-69d79fb496-sr697   1/1     Running   0          36h   10.96.3.9    gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+NAME                               READY   STATUS    RESTARTS   AGE     IP           NODE                                                 NOMINATED NODE   READINESS GATES
+load-generator-55c4597646-nbl7p    1/1     Running   0          9m9s    10.96.1.31   gke-research-autoscaler-default-pool-cc6226da-q6sy   <none>           <none>
+sample-workload-69d79fb496-sr697   1/1     Running   0          3d17h   10.96.3.9    gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
 
 === research-autoscaler ===
 NAME                                   READY   STATUS      RESTARTS   AGE     IP            NODE                                                 NOMINATED NODE   READINESS GATES
-predictive-autoscaler-29671555-t4x8w   0/1     Completed   0          60m     10.96.3.199   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671560-h28ts   0/1     Completed   0          55m     10.96.3.200   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671565-djgw6   0/1     Completed   0          50m     10.96.3.201   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671570-g7spd   0/1     Completed   0          45m     10.96.3.202   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671575-82kgc   0/1     Completed   0          40m     10.96.3.203   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671580-826gz   0/1     Completed   0          35m     10.96.3.204   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671585-xdgfc   0/1     Completed   0          30m     10.96.3.205   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671590-g5rrj   0/1     Completed   0          25m     10.96.3.206   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671595-ng92n   0/1     Completed   0          20m     10.96.3.207   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671600-pj89r   0/1     Completed   0          15m     10.96.3.208   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671605-766lj   0/1     Completed   0          10m     10.96.3.209   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671610-kblhs   0/1     Completed   0          5m17s   10.96.3.210   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
-predictive-autoscaler-29671615-29r87   1/1     Running     0          17s     10.96.3.211   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+manual-test-1-7fftt                    0/1     Completed   0          135m    10.96.3.117   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674615-d994h   0/1     Completed   0          3h12m   10.96.3.102   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674620-62lpr   0/1     Completed   0          3h7m    10.96.3.103   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674625-lfdcj   0/1     Completed   0          3h2m    10.96.3.104   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674630-p9q77   0/1     Completed   0          177m    10.96.3.105   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674635-vflw6   0/1     Completed   0          172m    10.96.3.107   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674640-nnlcw   0/1     Completed   0          167m    10.96.3.108   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674645-pfcqq   0/1     Completed   0          162m    10.96.3.110   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674650-rgmmk   0/1     Completed   0          157m    10.96.3.111   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674655-wb6z6   0/1     Completed   0          152m    10.96.3.112   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674660-nb2bj   0/1     Completed   0          147m    10.96.3.113   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674665-99sx4   0/1     Completed   0          142m    10.96.3.115   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674670-nbmll   0/1     Completed   0          137m    10.96.3.116   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674675-kgjfv   0/1     Completed   0          132m    10.96.3.118   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674680-ltw8d   0/1     Completed   0          127m    10.96.3.119   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674685-rxxxs   0/1     Completed   0          122m    10.96.3.121   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674690-mfpc8   0/1     Completed   0          117m    10.96.3.122   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674695-4nwjq   0/1     Completed   0          112m    10.96.3.123   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674700-dgs44   0/1     Completed   0          107m    10.96.3.124   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674705-r477h   0/1     Completed   0          102m    10.96.3.125   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674710-tcz9k   0/1     Completed   0          97m     10.96.3.126   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674715-gwf8d   0/1     Completed   0          92m     10.96.3.127   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674720-68f8d   0/1     Completed   0          87m     10.96.3.129   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674725-xqjxc   0/1     Completed   0          82m     10.96.3.130   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674730-k5lcw   0/1     Completed   0          77m     10.96.3.132   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674735-9rx88   0/1     Completed   0          72m     10.96.3.133   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674740-lkl7m   0/1     Completed   0          67m     10.96.3.134   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674745-r7l24   0/1     Completed   0          62m     10.96.3.135   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674750-l95sx   0/1     Completed   0          57m     10.96.3.137   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674755-ndkln   0/1     Completed   0          52m     10.96.3.138   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674760-v26qg   0/1     Completed   0          47m     10.96.3.139   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674765-6n7bb   0/1     Completed   0          42m     10.96.3.140   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674770-4vqqv   0/1     Completed   0          37m     10.96.3.141   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674775-957vw   0/1     Completed   0          32m     10.96.3.143   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674780-6q8mm   0/1     Completed   0          27m     10.96.3.144   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674785-khscb   0/1     Completed   0          22m     10.96.3.145   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674790-h66k7   0/1     Completed   0          17m     10.96.3.146   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674795-gx27v   0/1     Completed   0          12m     10.96.3.147   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674800-gmnfl   0/1     Completed   0          7m26s   10.96.3.148   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
+predictive-autoscaler-29674805-b8s7p   0/1     Completed   0          2m26s   10.96.3.149   gke-research-autoscaler-default-pool-cc6226da-1lgg   <none>           <none>
