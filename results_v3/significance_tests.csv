@@ -1,0 +1,5 @@
+comparison,proposed_mean_mae,baseline_mae,t_stat,p_value,significant_p05,cohens_d,effect_size
+Proposed vs HPA-Reactive,461.5043,1.2627,23.9524,0.0,True,10.7118,large
+Proposed vs Static LSTM,461.5043,547.1601,-4.4578,0.0112,True,-1.9936,large
+Proposed vs Static Hybrid,461.5043,1348.3629,-46.1549,0.0,True,-20.6411,large
+Proposed vs Periodic Retrain,461.5043,420.3351,2.1426,0.0988,False,0.9582,large
