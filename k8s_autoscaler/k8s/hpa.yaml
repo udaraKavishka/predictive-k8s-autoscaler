@@ -1,0 +1,30 @@
+# Stock Kubernetes Horizontal Pod Autoscaler — REACTIVE baseline for comparison
+# against the predictive autoscaler. Targets the same load-generator Deployment.
+#
+# Use only for the clean HPA baseline pass (see ../CLEAN_HPA_BASELINE.md). The predictive
+# CronJob MUST be suspended first so the two controllers do not fight over the deployment.
+#
+# CPU target is 80% of the container CPU *request* (load-generator requests 50m), matching
+# the `kubectl autoscale --cpu-percent=80` documented in GCP_RESEARCH_GUIDE.md §8.4.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: load-generator
+  namespace: research-workload
+  labels:
+    app: load-generator
+    research: autoscaler-baseline
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: load-generator
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80

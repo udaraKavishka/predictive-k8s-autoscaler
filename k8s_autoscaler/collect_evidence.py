@@ -291,6 +291,13 @@ def step5_summary(decisions):
         m = d.get("method", "unknown")
         method_counts[m] = method_counts.get(m, 0) + 1
 
+    warnings = []
+    if EVIDENCE_LABEL.lower() == "hpa" and predictive:
+        warnings.extend([
+            "WARNING: This run is labelled 'hpa' but contains predictive-autoscaler decisions.",
+            "Do not cite decisions.csv as HPA decisions unless saved HPA status proves HPA controlled the deployment.",
+        ])
+
     report_lines = [
         "=" * 60,
         "  Kubernetes Simulation — Evidence Summary",
@@ -309,6 +316,8 @@ def step5_summary(decisions):
         f"Scale-up   events            : {scale_ups}",
         f"Scale-down events            : {scale_downs}",
         "",
+        *warnings,
+        "" if warnings else None,
         "Output files:",
         *[f"  evidence/{f}" for f in sorted(os.listdir(OUTPUT_DIR))],
         "",
@@ -317,7 +326,7 @@ def step5_summary(decisions):
         "=" * 60,
     ]
 
-    report = "\n".join(report_lines)
+    report = "\n".join(line for line in report_lines if line is not None)
     save("summary_report.txt", report)
     print("\n" + report)
 
@@ -414,7 +423,9 @@ def step6_plots(decisions):
         log("  ⚠  prometheus_replicas.json has no load-generator series — fig2 skipped")
 
     # ── fig3: current vs predicted CPU + replicas (predictive runs only) ──────
-    if decisions:
+    if EVIDENCE_LABEL.lower() == "hpa" and any(d.get("method") == "predictive" for d in decisions):
+        log("  ⚠  HPA-labelled run contains predictive decisions — fig3 skipped")
+    elif decisions:
         idx       = list(range(len(decisions)))
         current   = [d.get("current_cpu")   for d in decisions]
         predicted = [d.get("predicted_cpu") for d in decisions]
