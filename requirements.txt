@@ -1,4 +1,7 @@
-numpy
+# CPU / general requirements for the research code (research_imp_V3.py).
+# For an NVIDIA-GPU run of research_imp_V3_gpu.py use research_imp/requirements_gpu.txt
+# (it pins a GPU-enabled, Keras-2 TensorFlow build).
+numpy<2
 pandas
 matplotlib
 seaborn
