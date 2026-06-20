@@ -1,0 +1,29 @@
+# Native-Windows GPU requirements for research_imp_V3_win_gpu.py
+# Target: Windows 10/11 with an NVIDIA GPU.
+#
+# IMPORTANT — native-Windows GPU constraints:
+#  * TensorFlow dropped native-Windows GPU support after TF 2.10. TF 2.11+ only has GPU on
+#    Windows via WSL2. So GPU on *native* Windows requires tensorflow==2.10.x.
+#  * On Windows the plain `tensorflow` 2.10 wheel already includes GPU support — do NOT use
+#    `tensorflow[and-cuda]` (that extra is Linux-only and pulls ~5-7 GB of manylinux wheels;
+#    it is what caused the "No space left on device" error).
+#  * CUDA/cuDNN are NOT installed by pip for this stack. You must provide, on PATH:
+#       - NVIDIA driver supporting CUDA >= 11.2  (check the top-right of `nvidia-smi`)
+#       - CUDA Toolkit 11.2
+#       - cuDNN 8.1
+#    (Or use conda: `conda install -c conda-forge cudatoolkit=11.2 cudnn=8.1`.)
+#  * Python must be 3.10.x (TF 2.10 supports Python 3.7-3.10, NOT 3.11+).
+#
+# numpy is pinned < 1.24 on purpose: TF 2.10 uses np.object / np.bool aliases that numpy 1.24
+# removed.
+#
+# Install:  pip install -r research_imp\requirements_windows_gpu.txt
+# Verify :  python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+
+tensorflow==2.10.1
+numpy==1.23.5
+pandas==2.0.3
+scikit-learn==1.3.2
+scipy==1.10.1
+matplotlib==3.7.5
+seaborn==0.12.2
