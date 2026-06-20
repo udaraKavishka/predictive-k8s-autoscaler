@@ -1,0 +1,182 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ left=40mm,
+ top=25mm,
+  bottom=25mm,
+  right=15mm
+ }
+ \usepackage{fontspec}
+\setmainfont{Times New Roman}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancypagestyle{plain}{%
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\thepage}
+}
+\usepackage{amsmath}
+\usepackage{amsfonts}  
+\usepackage{lscape}
+\usepackage{float}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{import}
+\usepackage{bm}
+\usepackage{enumerate}
+\usepackage{setspace}
+\usepackage{multirow}
+\usepackage[caption=false]{subfig}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{algcompatible}
+\usepackage{caption}
+\captionsetup[figure]{font=footnotesize,labelfont={footnotesize,bf}}
+\captionsetup[table]{font=footnotesize,labelfont={footnotesize,bf}}
+
+\setlength{\headheight}{14.5pt}
+
+\makeatletter
+\renewcommand\thealgorithm{\thechapter.\arabic{algorithm}} 
+\@addtoreset{algorithm}{chapter} 
+\makeatother
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{lemma}{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{corollary}{Corollary}
+
+\usepackage{titletoc}
+\renewcommand\contentsname{Table of Contents}
+\titlecontents{chapter}[0.0cm]{\singlespacing\thispagestyle{fancy}}{{\MakeUppercase{Chapter} \thecontentslabel: }}{}{\enspace\titlerule*[.5pc]{.}\thecontentspage}
+
+\titlecontents{part}[0.0cm]{}{}{}{\enspace\titlerule*[.5pc]{.}\thecontentspage}
+
+\titlecontents{section}[.7cm]{} 
+{{\thecontentslabel$\;\;$}}{}{ \enspace\titlerule*[.5pc]{.}\thecontentspage} 
+
+\titlecontents{subsection}[1.5cm]{} 
+{{\thecontentslabel$\;\;\;$}}{}{ \enspace\titlerule*[.5pc]{.}\thecontentspage} 
+
+\usepackage[
+    backend=biber,
+    style=chem-acs,articletitle=true,
+  ]{biblatex}
+ \addbibresource{Ref.bib}
+ %\usepackage{hyperref}
+ 
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]{\centering }{\bfseries\large \MakeUppercase{\chaptertitlename}\hspace{1ex}{\selectfont\thechapter} }{12pt}{\bfseries\large\MakeUppercase}
+\titlespacing{\chapter}{0pt}{0pt}{12pt}  
+
+\titleformat{\section}{}{\bfseries\thesection}{12pt}{\bfseries}  
+
+\titleformat{\subsection}{}{\bfseries\thesubsection}{12pt}{\bfseries}
+
+
+\usepackage[nopostdot,acronym,nomain,nonumberlist]{glossaries}
+\makeglossaries
+\setacronymstyle{long-short}
+\setlength{\glsdescwidth}{0.8\textwidth}
+\loadglsentries[acronym]{Abbrv}
+
+
+\newcommand\listappendixname{List of Appendices}
+\newcommand\appcaption[1]{%
+   \addcontentsline{app}{chapter}{#1}}
+\makeatletter
+\newcommand\listofappendices{%
+   \chapter*{\listappendixname}\@starttoc{app}}
+\makeatother
+
+\begin{document}
+\import{./}{Cover.tex}
+\thispagestyle{empty}
+\newpage
+\import{./}{Title.tex}
+\thispagestyle{empty}
+
+\fancyhf{}
+\chead{\thepage}
+\renewcommand\headrulewidth{0pt}
+\pagenumbering{roman}\setcounter{page}{1}
+\addcontentsline{toc}{part}{DECLARATION}
+\import{./}{Declaration.tex}%\pagestyle{fancy}
+\newpage
+
+\addcontentsline{toc}{part}{ABSTRACT}
+\import{./}{Abstract.tex}
+\newpage
+
+
+\addcontentsline{toc}{part}{ACKNOWLEDGEMENTS}
+\import{./}{Acknowledgement.tex}
+\newpage
+\thispagestyle{fancy}
+\addcontentsline{toc}{part}{TABLE OF CONTENTS}
+\setcounter{tocdepth}{2}
+\tableofcontents\thispagestyle{fancy}\singlespacing
+\newpage
+
+
+
+\addcontentsline{toc}{part}{LIST OF TABLES}
+\listoftables\thispagestyle{fancy}\singlespacing
+\newpage
+
+\addcontentsline{toc}{part}{LIST OF FIGURES}
+\listoffigures\thispagestyle{fancy}\singlespacing
+\newpage
+
+\addcontentsline{toc}{part}{LIST OF ABBREVIATIONS}
+\printglossary[title={LIST OF ABBREVIATIONS},type=acronym,style=long]\thispagestyle{fancy}
+\newpage
+
+\addcontentsline{toc}{part}{LIST OF APPENDICES}
+\listofappendices\thispagestyle{fancy}\singlespacing
+
+
+
+\chapter{INTRODUCTION}\onehalfspacing
+\fancyhf{}
+\cfoot{\thepage}
+\renewcommand\footrulewidth{0pt}
+\pagenumbering{arabic}
+\import{}{Introduction.tex}
+
+\chapter{LITERATURE REVIEW}
+\import{}{Literature.tex}
+
+\chapter{Methodology}
+\import{}{Methodology.tex}
+
+\chapter{Results and Discussion}
+\import{}{Results.tex}
+
+
+\chapter{CONCLUSION}
+\import{}{Conclusion.tex}
+\newpage
+\singlespacing
+\addcontentsline{toc}{chapter}{BIBLIOGRAPHY}
+\printbibliography
+\newpage
+
+\addcontentsline{toc}{chapter}{APPENDICES}
+\import{}{Apendix.tex}
+
+\end{document}
