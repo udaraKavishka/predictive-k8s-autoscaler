@@ -1,0 +1,70 @@
+{
+  "artifacts": {
+    "proposed_model": {
+      "path": "hybrid_model_ewc_er.h5",
+      "exists": true,
+      "mtime": 1782081371.9250169,
+      "note": ""
+    },
+    "chunk_metrics": {
+      "path": "chunk_metrics.csv",
+      "exists": true,
+      "mtime": 1782081371.943752,
+      "note": ""
+    },
+    "bwt_matrix": {
+      "path": "bwt_matrix.json",
+      "exists": true,
+      "mtime": 1782081371.9474611,
+      "note": ""
+    },
+    "train_histories": {
+      "path": "train_histories.pkl",
+      "exists": true,
+      "mtime": 1782081371.9736419,
+      "note": ""
+    },
+    "final_predictions": {
+      "path": "final_predictions.npz",
+      "exists": true,
+      "mtime": 1782081371.99318,
+      "note": ""
+    }
+  },
+  "stages": {
+    "setup": {
+      "status": "executed",
+      "detail": "environment configured",
+      "updated_at": 1782061841.5329375
+    },
+    "load": {
+      "status": "executed",
+      "detail": "preprocessed data loaded",
+      "updated_at": 1782061842.5648558
+    },
+    "features": {
+      "status": "executed",
+      "detail": "feature engineering complete",
+      "updated_at": 1782061843.557026
+    },
+    "prepare": {
+      "status": "executed",
+      "detail": "sequences/chunks prepared",
+      "updated_at": 1782061864.539481
+    },
+    "train": {
+      "status": "trained",
+      "detail": "proposed model pipeline executed and saved",
+      "updated_at": 1782081371.9935267
+    }
+  },
+  "signature": "fef2bdd3ef4aa8f2097bcd37864ff68dc590053a7e22d2c7cdeee6d48bcf89d8",
+  "last_run_until": "train",
+  "stage_status": {
+    "setup": "executed",
+    "load": "executed",
+    "features": "executed",
+    "prepare": "executed",
+    "train": "trained"
+  }
+}
