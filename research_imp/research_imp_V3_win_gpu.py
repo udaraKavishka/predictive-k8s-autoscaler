@@ -33,6 +33,7 @@ from __future__ import annotations
 
 # Standard-library imports for filesystem operations, timing, and CLI parsing.
 import argparse
+import gc
 import hashlib
 import json
 import os
@@ -446,6 +447,40 @@ def create_lstm_only_model(history_length: int, n_temporal: int) -> Model:
     return model
 
 
+# Loads a cached model only if its input width matches the current feature set.
+# This guards against silently reusing an artifact trained under an older feature
+# set (e.g. the leaked 7-static-feature run before instance_count was removed).
+# Returns the loaded model on a match, or None on a mismatch / load failure so the
+# caller can fall back to retraining.
+def load_model_if_compatible(
+    path: Path, expected_dim: int, lstm_only: bool = False
+) -> Model | None:
+    try:
+        model = tf.keras.models.load_model(path)
+    except Exception as exc:
+        print(f"    [cache-guard] could not load {path.name} ({type(exc).__name__}); will retrain")
+        return None
+    # Hybrid models have two inputs ([temporal, static]); the static branch is
+    # input index 1. LSTM-only models have a single temporal input at index 0.
+    try:
+        if lstm_only:
+            actual_dim = int(model.inputs[0].shape[-1])
+            label = "temporal"
+        else:
+            actual_dim = int(model.inputs[1].shape[-1])
+            label = "static"
+    except (IndexError, TypeError) as exc:
+        print(f"    [cache-guard] {path.name}: could not read input shape ({exc}); will retrain")
+        return None
+    if actual_dim != expected_dim:
+        print(
+            f"    [cache-guard] {path.name}: {label} input dim {actual_dim} != "
+            f"expected {expected_dim} (stale feature set) -> retraining"
+        )
+        return None
+    return model
+
+
 # Custom helper that combines standard MSE with EWC regularization penalty.
 @register_keras_serializable()
 def loss_with_ewc(
@@ -698,7 +733,10 @@ def train_proposed_model(
                 batch_size=cfg.batch_size,
                 validation_data=([x_seq_val, x_stat_val], y_val),
             )
-        train_histories.append(history)
+        # Store only the plain metrics dict, never the Keras History object: a
+        # History holds a reference to the model, and pickling that serializes
+        # the model to an ephemeral ram:// path that cannot be reloaded later.
+        train_histories.append(getattr(history, "history", history))
 
         # Evaluate current chunk on real-value scale to report business-meaningful metrics.
         y_pred_scaled = model.predict([x_seq_val, x_stat_val], verbose=0).flatten()
@@ -939,14 +977,21 @@ def run_baselines_with_cache(
     # Baseline 1: Static LSTM cache paths.
     slstm_model_path = output_dir / "baseline_static_lstm.h5"
     slstm_pred_path = output_dir / "baseline_static_lstm_pred.npz"
-    if (
+    slstm_cached = (
         cfg.resume
         and signature_matches
         and (not cfg.force_baselines and not cfg.refresh_all)
         and artifacts_exist([slstm_model_path, slstm_pred_path])
-    ):
+    )
+    # LSTM-only baseline: validate the temporal input width (n_temporal).
+    slstm_model_cached = (
+        load_model_if_compatible(slstm_model_path, n_temporal, lstm_only=True)
+        if slstm_cached
+        else None
+    )
+    if slstm_model_cached is not None:
         print("    [baseline][static_lstm] found saved model+prediction -> loading")
-        models["static_lstm_model"] = tf.keras.models.load_model(slstm_model_path)
+        models["static_lstm_model"] = slstm_model_cached
         slstm_npz = np.load(slstm_pred_path)
         preds["Static LSTM"] = slstm_npz["y_pred"]
         baseline_status["Static LSTM"] = "loaded"
@@ -971,14 +1016,20 @@ def run_baselines_with_cache(
     # Baseline 2: Static Hybrid cache paths.
     shybrid_model_path = output_dir / "baseline_static_hybrid.h5"
     shybrid_pred_path = output_dir / "baseline_static_hybrid_pred.npz"
-    if (
+    # Guard the cached hybrid baseline the same way as the proposed model: a model
+    # from an older feature set (7 static inputs) must not be reused at 6 features.
+    shybrid_cached = (
         cfg.resume
         and signature_matches
         and (not cfg.force_baselines and not cfg.refresh_all)
         and artifacts_exist([shybrid_model_path, shybrid_pred_path])
-    ):
+    )
+    shybrid_model_cached = (
+        load_model_if_compatible(shybrid_model_path, n_static) if shybrid_cached else None
+    )
+    if shybrid_model_cached is not None:
         print("    [baseline][static_hybrid] found saved model+prediction -> loading")
-        models["static_hybrid_model"] = tf.keras.models.load_model(shybrid_model_path)
+        models["static_hybrid_model"] = shybrid_model_cached
         shybrid_npz = np.load(shybrid_pred_path)
         preds["Static Hybrid"] = shybrid_npz["y_pred"]
         baseline_status["Static Hybrid"] = "loaded"
@@ -1007,18 +1058,27 @@ def run_baselines_with_cache(
         baseline_status["Static Hybrid"] = "trained"
     mark_artifact(manifest, "baseline_static_hybrid_model", shybrid_model_path)
     mark_artifact(manifest, "baseline_static_hybrid_pred", shybrid_pred_path)
+    # Persist progress before the heavier periodic baseline, and release any
+    # freed host memory so the periodic TensorDataset build has headroom (the
+    # previous run OOM'd here: "Dst tensor is not initialized").
+    save_manifest(output_dir, manifest)
+    gc.collect()
 
     # Baseline 3: Periodic retrain cache paths.
     periodic_model_path = output_dir / "baseline_periodic.h5"
     periodic_pred_path = output_dir / "baseline_periodic_pred.npz"
-    if (
+    periodic_cached = (
         cfg.resume
         and signature_matches
         and (not cfg.force_baselines and not cfg.refresh_all)
         and artifacts_exist([periodic_model_path, periodic_pred_path])
-    ):
+    )
+    periodic_model_cached = (
+        load_model_if_compatible(periodic_model_path, n_static) if periodic_cached else None
+    )
+    if periodic_model_cached is not None:
         print("    [baseline][periodic] found saved model+prediction -> loading")
-        models["periodic_model"] = tf.keras.models.load_model(periodic_model_path)
+        models["periodic_model"] = periodic_model_cached
         periodic_npz = np.load(periodic_pred_path)
         preds["Periodic Retrain"] = periodic_npz["y_pred"]
         baseline_status["Periodic Retrain"] = "loaded"
@@ -1035,6 +1095,9 @@ def run_baselines_with_cache(
                 batch_size=cfg.batch_size,
                 verbose=0,
             )
+            # Drop the per-chunk TensorDataset/graph temporaries before the next
+            # fit so GPU memory does not accumulate across the 4 retrain rounds.
+            gc.collect()
         y_periodic_scaled = periodic_model.predict(
             [x_final_seq, x_final_stat], verbose=0
         ).flatten()
@@ -1219,15 +1282,17 @@ def plot_evaluation_results(
     chunk_colors = ["#3498db", "#e74c3c", "#2ecc71", "#9b59b6"]
     for i, hist in enumerate(train_histories):
         c = chunk_colors[i % len(chunk_colors)]
+        # Accept both a plain metrics dict (new format) and a Keras History.
+        hd = hist.history if hasattr(hist, "history") else hist
         ax.plot(
-            hist.history.get("loss", []),
+            hd.get("loss", []),
             color=c,
             linewidth=1.5,
             label=f"C{i + 1} train",
         )
-        if "val_loss" in hist.history:
+        if "val_loss" in hd:
             ax.plot(
-                hist.history["val_loss"],
+                hd["val_loss"],
                 color=c,
                 linestyle="--",
                 linewidth=1.3,
@@ -1330,7 +1395,17 @@ def run_naive_ft_comparison(
     vcfg.replay_ratio = 0.0
     vcfg.replay_memory = 0
 
+    # Start this heavy stage with a clean graph so leftover GPU state from the
+    # proposed/baseline models does not stack on top of this training.
+    tf.keras.backend.clear_session()
+    gc.collect()
+
     model = create_hybrid_model(cfg.history_length, n_temporal, n_static)
+    # Compile ONCE here, not inside the per-chunk loop. Re-compiling every chunk
+    # created a fresh Adam optimizer (new GPU slot variables) each time without
+    # releasing the previous one, which exhausted GPU memory by chunk 2. A single
+    # optimizer also keeps fine-tuning momentum continuous across chunks.
+    model.compile(optimizer="adam", loss="mse", metrics=["mae"])
     diagonal_maes: list[float] = []
     val_sets: list[tuple[np.ndarray, np.ndarray, np.ndarray]] = []
 
@@ -1342,7 +1417,6 @@ def run_naive_ft_comparison(
         val_sets.append((x_seq_val, x_stat_val, y_val))
 
         print(f"    [naive_ft] chunk {chunk_idx + 1}/{cfg.n_chunks} — plain MSE fine-tuning")
-        model.compile(optimizer="adam", loss="mse", metrics=["mae"])
         model.fit(
             [x_seq_tr, x_stat_tr],
             y_tr,
@@ -1783,14 +1857,24 @@ def run_experiment(cfg: ExperimentConfig) -> dict[str, Any]:
     # Compute and compare config signature for safe artifact reuse.
     current_sig = config_signature(cfg)
     prev_sig = manifest.get("signature")
-    signature_matches = prev_sig == current_sig
+    # Crash recovery: a run that died mid-way (e.g. GPU OOM on a baseline) never
+    # reaches the final save_manifest, so prev_sig stays None even though valid
+    # artifacts (the multi-hour proposed model, finished baselines) sit on disk.
+    # Treat "no recorded signature" as reusable so --resume can pick those up
+    # instead of redoing training. A genuine config change (prev_sig set but
+    # different) still forces a retrain, so this stays safe.
+    signature_matches = (prev_sig == current_sig) or (prev_sig is None)
     print(f"Execution plan (run-until={cfg.run_until}): {', '.join(selected_stages)}")
     if prev_sig is None:
-        print("Manifest status: no prior signature found (fresh run context)")
+        print("Manifest status: no prior signature found -> will reuse any artifacts on disk")
     else:
         print(
             f"Manifest status: signature {'MATCH' if signature_matches else 'MISMATCH'}"
         )
+    # Persist the signature immediately so that if this run also crashes part-way,
+    # the next run can still match it and resume from disk artifacts.
+    manifest["signature"] = current_sig
+    save_manifest(output_dir, manifest)
     tracker = ProgressTracker(len(selected_stages))
 
     # Initialize outputs/state holders for partial runs.
@@ -1920,11 +2004,16 @@ def run_experiment(cfg: ExperimentConfig) -> dict[str, Any]:
             and artifacts_exist(proposed_artifacts)
         )
 
+        # Guard against reusing a model trained under an older feature set: load it
+        # first and verify its static input width matches the current n_static.
+        if can_resume_proposed:
+            model = load_model_if_compatible(proposed_model_path, n_static)
+            can_resume_proposed = model is not None
+
         if can_resume_proposed:
             print(
                 "    [train][proposed] all saved artifacts found -> loading and skipping training"
             )
-            model = tf.keras.models.load_model(proposed_model_path)
             chunk_df = pd.read_csv(chunk_metrics_path)
             chunk_results = normalize_chunk_results(chunk_df.to_dict(orient="records"))
             with open(bwt_matrix_path, "r", encoding="utf-8") as f:
@@ -1933,8 +2022,19 @@ def run_experiment(cfg: ExperimentConfig) -> dict[str, Any]:
                 int(k): {int(kk): float(vv) for kk, vv in v.items()}
                 for k, v in bwt_raw.items()
             }
-            with open(train_histories_path, "rb") as f:
-                train_histories = pickle.load(f)
+            # Older runs pickled Keras History objects, which embed an
+            # unreloadable model reference. If that legacy file fails to load,
+            # skip it (only the loss-curve subplot is affected) rather than
+            # discarding the multi-hour trained model and retraining.
+            try:
+                with open(train_histories_path, "rb") as f:
+                    train_histories = pickle.load(f)
+            except Exception as exc:
+                print(
+                    f"    [train][proposed] WARNING: could not load train_histories "
+                    f"({type(exc).__name__}); continuing without loss curves"
+                )
+                train_histories = []
             pred_npz = np.load(final_pred_path)
             y_final_real = pred_npz["y_final_real"]
             y_final_pred = pred_npz["y_final_pred"]
@@ -1994,6 +2094,10 @@ def run_experiment(cfg: ExperimentConfig) -> dict[str, Any]:
             )
             tracker.end(s, note="trained and saved proposed pipeline")
 
+        # Checkpoint the manifest right after the (expensive) proposed stage so a
+        # later crash never costs us the multi-hour training again.
+        save_manifest(output_dir, manifest)
+
     # Stage: baselines with per-baseline cache support.
     if "baselines" in selected_stages:
         if (
@@ -2044,6 +2148,18 @@ def run_experiment(cfg: ExperimentConfig) -> dict[str, Any]:
                 )
         except Exception as exc:
             print(f"    [avg_task] skipped ({type(exc).__name__}: {exc})")
+
+        # Release the proposed + baseline models from the GPU now that the baseline
+        # comparison and avg_task metrics are done. The heavy validation stages that
+        # follow do not use these in-memory objects (cross_app reloads the proposed
+        # model from disk, naive_ft builds its own, the rest use saved tables), so
+        # holding them resident only fragments GPU memory and contributes to the
+        # naive_ft OOM. run_experiment's return value is discarded by main(), so
+        # clearing these references has no downstream effect.
+        model = None
+        baseline_models = {}
+        tf.keras.backend.clear_session()
+        gc.collect()
 
         stage_status["baselines"] = "executed"
         mark_stage(
