@@ -16,7 +16,7 @@ data:
   # Safety over-provisioning margin (15% matches the SLA_TOL in research)
   SLA_TOLERANCE:    "0.15"
 
-  #  Model directory (contains hybrid_model_ewc_er.keras + 3 .pkl scalers) ─
+  #  Model directory (contains hybrid_model_ewc_er.h5 or .keras + 3 .pkl scalers)
   MODEL_DIR:        "/model"
   HISTORY_LENGTH:   "24"     # 2-hour look-back (24 × 5-min steps)
   FORECAST_STEPS:   "6"      # 30-min horizon
@@ -33,7 +33,6 @@ data:
   STATIC_MEM_GIB:        "354.12"
   STATIC_RDMA:           "7.866"
   STATIC_HN_FRACTION:    "0.286"
-  STATIC_INSTANCE_COUNT: "3.861"
   STATIC_MAX_PER_NODE:   "4.577"
   APP_ID:                "113"
 
@@ -65,7 +64,6 @@ data:
   STATIC_MEM_GIB:        "354.12"
   STATIC_RDMA:           "7.866"
   STATIC_HN_FRACTION:    "0.286"
-  STATIC_INSTANCE_COUNT: "3.861"
   STATIC_MAX_PER_NODE:   "4.577"
   APP_ID:                "113"
   LIVE_REF_CPU:          "0.3"
