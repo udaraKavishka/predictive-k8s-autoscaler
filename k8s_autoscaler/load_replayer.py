@@ -40,17 +40,19 @@ import time
 import numpy as np
 import pandas as pd
 
+from config import (
+    AUTOSCALER_DIR,
+    CPU_PER_STRESS_POD,
+    MIN_PODS,
+    MAX_PODS,
+)
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)],
 )
 log = logging.getLogger("load-replayer")
-
-# vCPU allocated per stress-ng pod
-CPU_PER_STRESS_POD = float(os.getenv("STRESS_CPU_PER_POD", "0.1"))
-MIN_PODS = 1
-MAX_PODS = 20
 
 # Kubernetes helper
 
@@ -183,7 +185,8 @@ def parse_args():
     p.add_argument("--speed",      type=float, default=1.0,
                    help="Time multiplier (e.g. 10.0 = 10× faster)")
     p.add_argument("--dry-run",    action="store_true")
-    p.add_argument("--log-file",   default="replay_log.csv",
+    p.add_argument("--log-file",
+                   default=os.path.join(AUTOSCALER_DIR, "replay_log.csv"),
                    help="Output CSV for replay evidence")
     p.add_argument("--max-steps", type=int, default=None,
                    help="Stop after this many steps (default: run all)")
