@@ -6,7 +6,10 @@ Automated script to collect all GKE simulation evidence for the dissertation.
 Run once after the trace replay has been running for at least 2 hours.
 
 Usage:
-    cd /home/udara/Documents/Research/k8s_autoscaler
+    python3 collect_evidence.py
+
+    # Run from a different folder (or when the directory has moved):
+    AUTOSCALER_DIR=/path/to/k8s_autoscaler python3 collect_evidence.py
 
     # Single (predictive) run — writes into evidence/
     python3 collect_evidence.py
@@ -54,25 +57,24 @@ import subprocess
 import sys
 import time
 
-# ── Configuration ─────────────────────────────────────────────────────────────
+from config import (
+    AUTOSCALER_NS,
+    WORKLOAD_NS,
+    PROMETHEUS_URL,
+    PROM_DURATION,
+    CPU_PER_REPLICA,
+    EVIDENCE_DIR,
+    COLLECT_WAIT_SECONDS,
+)
 
-WAIT_SECONDS       = 120          # 2-minute wait between steps (change to 0 to skip)
-AUTOSCALER_NS      = "research-autoscaler"
-WORKLOAD_NS        = "research-workload"
-PROMETHEUS_URL     = "http://localhost:9090"
+# ── Runtime state (mutated in main()) ─────────────────────────────────────────
 
-# Base evidence dir; a label (env EVIDENCE_LABEL / --label) writes into a sub-folder
+# Base evidence dir — from config; a label writes into a sub-folder
 # e.g. evidence/predictive/ and evidence/hpa/ for the comparison passes.
-BASE_EVIDENCE_DIR  = os.path.join(os.path.dirname(__file__), "evidence")
+BASE_EVIDENCE_DIR  = EVIDENCE_DIR
 EVIDENCE_LABEL     = ""            # set in main() from CLI / env
 OUTPUT_DIR         = BASE_EVIDENCE_DIR
-
-# vCPU allocated per replica of the target Deployment — must match
-# CPU_PER_REPLICA in k8s/configmap.yaml. Used for the figures and the comparison.
-CPU_PER_REPLICA    = 0.1
-
-# Prometheus query time window — last 3 hours covers a full simulation run
-PROM_DURATION      = "3h"
+WAIT_SECONDS       = COLLECT_WAIT_SECONDS
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
