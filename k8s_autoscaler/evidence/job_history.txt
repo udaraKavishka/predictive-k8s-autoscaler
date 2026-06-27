@@ -1,0 +1,5 @@
+NAME                             STATUS    COMPLETIONS   DURATION   AGE
+predictive-autoscaler-29708590   Failed    0/1           28m        28m
+predictive-autoscaler-29708600   Failed    0/1           20m        20m
+predictive-autoscaler-29708605   Failed    0/1           12m        12m
+predictive-autoscaler-29708615   Running   0/1           4m19s      4m19s

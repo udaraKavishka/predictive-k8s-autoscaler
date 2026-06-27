@@ -1,0 +1,32 @@
+============================================================
+  Kubernetes Simulation — Evidence Summary
+  Generated: 2026-06-27T05:10:29.933451
+============================================================
+
+Total autoscaler decisions   : 0
+Predictive decisions         : 0
+Reactive fallback decisions  : 0
+
+Method breakdown:
+
+Max replicas reached         : —
+Min replicas reached         : —
+Scale-up   events            : 0
+Scale-down events            : 0
+
+Output files:
+  evidence/autoscaler_decisions.log
+  evidence/decisions.jsonl
+  evidence/deployment_status.txt
+  evidence/hpa
+  evidence/job_history.txt
+  evidence/pod_status.txt
+  evidence/prometheus_cpu.json
+  evidence/prometheus_load_generator_cpu.json
+  evidence/prometheus_replicas.json
+  evidence/scaling_events.txt
+  evidence/summary_report.txt
+
+============================================================
+  Evidence collection complete — ready for dissertation
+============================================================
