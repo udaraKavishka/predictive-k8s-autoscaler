@@ -1,0 +1,2 @@
+NAME                    SCHEDULE      TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+predictive-autoscaler   */5 * * * *   <none>     True      0        12m             2d8h

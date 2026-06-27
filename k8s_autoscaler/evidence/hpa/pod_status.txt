@@ -1,0 +1,16 @@
+=== research-workload ===
+NAME                               READY   STATUS             RESTARTS   AGE     IP           NODE                                                 NOMINATED NODE   READINESS GATES
+load-generator-55c4597646-26zng    1/1     Running            0          16m     10.16.0.49   gke-research-autoscaler-default-pool-0298af38-pltp   <none>           <none>
+load-generator-55c4597646-2cj5g    1/1     Running            0          16m     10.16.2.38   gke-research-autoscaler-default-pool-0298af38-t9t3   <none>           <none>
+load-generator-55c4597646-8bpz7    1/1     Running            0          16m     10.16.2.37   gke-research-autoscaler-default-pool-0298af38-t9t3   <none>           <none>
+load-generator-55c4597646-g5bcd    1/1     Running            0          16m     10.16.0.50   gke-research-autoscaler-default-pool-0298af38-pltp   <none>           <none>
+load-generator-55c4597646-gd62z    1/1     Running            0          16m     10.16.2.39   gke-research-autoscaler-default-pool-0298af38-t9t3   <none>           <none>
+load-generator-55c4597646-hfjrx    1/1     Running            0          16m     10.16.0.52   gke-research-autoscaler-default-pool-0298af38-pltp   <none>           <none>
+load-generator-55c4597646-hwkcb    1/1     Running            0          16m     10.16.0.54   gke-research-autoscaler-default-pool-0298af38-pltp   <none>           <none>
+load-generator-55c4597646-k49mw    1/1     Running            0          16m     10.16.0.53   gke-research-autoscaler-default-pool-0298af38-pltp   <none>           <none>
+load-generator-55c4597646-mwnvv    1/1     Running            0          16m     10.16.0.51   gke-research-autoscaler-default-pool-0298af38-pltp   <none>           <none>
+load-generator-55c4597646-vd6pk    1/1     Running            0          16m     10.16.2.40   gke-research-autoscaler-default-pool-0298af38-t9t3   <none>           <none>
+sample-workload-69d79fb496-zl4gr   1/1     Running            0          2d10h   10.16.0.10   gke-research-autoscaler-default-pool-0298af38-pltp   <none>           <none>
+trace-replayer-w6krm               0/1     ImagePullBackOff   0          2d10h   10.16.0.13   gke-research-autoscaler-default-pool-0298af38-pltp   <none>           <none>
+
+=== research-autoscaler ===

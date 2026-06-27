@@ -1,0 +1,203 @@
+LAST SEEN   TYPE      REASON              OBJECT                                 MESSAGE
+16m         Normal    Scheduled           pod/load-generator-55c4597646-gd62z    Successfully assigned research-workload/load-generator-55c4597646-gd62z to gke-research-autoscaler-default-pool-0298af38-t9t3
+16m         Warning   FailedScheduling    pod/load-generator-55c4597646-k49mw    0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+42m         Warning   FailedScheduling    pod/load-generator-bd586c8df-ff58r     0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+42m         Normal    Scheduled           pod/load-generator-bd586c8df-b97hk     Successfully assigned research-workload/load-generator-bd586c8df-b97hk to gke-research-autoscaler-default-pool-0298af38-pltp
+16m         Normal    Scheduled           pod/load-generator-55c4597646-2cj5g    Successfully assigned research-workload/load-generator-55c4597646-2cj5g to gke-research-autoscaler-default-pool-0298af38-t9t3
+16m         Warning   FailedScheduling    pod/load-generator-55c4597646-26zng    0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+42m         Warning   FailedScheduling    pod/load-generator-bd586c8df-hm8xw     0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+41m         Normal    Scheduled           pod/load-generator-bd586c8df-9mms6     Successfully assigned research-workload/load-generator-bd586c8df-9mms6 to gke-research-autoscaler-default-pool-0298af38-t9t3
+41m         Warning   FailedScheduling    pod/load-generator-bd586c8df-9mms6     0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+16m         Normal    Scheduled           pod/load-generator-55c4597646-8bpz7    Successfully assigned research-workload/load-generator-55c4597646-8bpz7 to gke-research-autoscaler-default-pool-0298af38-t9t3
+42m         Normal    Scheduled           pod/load-generator-bd586c8df-9fpqp     Successfully assigned research-workload/load-generator-bd586c8df-9fpqp to gke-research-autoscaler-default-pool-0298af38-q04g
+42m         Normal    Scheduled           pod/load-generator-bd586c8df-hm8xw     Successfully assigned research-workload/load-generator-bd586c8df-hm8xw to gke-research-autoscaler-default-pool-0298af38-pltp
+41m         Normal    Scheduled           pod/load-generator-bd586c8df-6ll2k     Successfully assigned research-workload/load-generator-bd586c8df-6ll2k to gke-research-autoscaler-default-pool-0298af38-pltp
+16m         Warning   FailedScheduling    pod/load-generator-55c4597646-g5bcd    0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+16m         Normal    Scheduled           pod/load-generator-55c4597646-mwnvv    Successfully assigned research-workload/load-generator-55c4597646-mwnvv to gke-research-autoscaler-default-pool-0298af38-pltp
+16m         Normal    Scheduled           pod/load-generator-55c4597646-k49mw    Successfully assigned research-workload/load-generator-55c4597646-k49mw to gke-research-autoscaler-default-pool-0298af38-pltp
+42m         Normal    Scheduled           pod/load-generator-bd586c8df-5sgjr     Successfully assigned research-workload/load-generator-bd586c8df-5sgjr to gke-research-autoscaler-default-pool-0298af38-pltp
+42m         Normal    Scheduled           pod/load-generator-bd586c8df-ff58r     Successfully assigned research-workload/load-generator-bd586c8df-ff58r to gke-research-autoscaler-default-pool-0298af38-t9t3
+42m         Normal    Scheduled           pod/load-generator-bd586c8df-tnkds     Successfully assigned research-workload/load-generator-bd586c8df-tnkds to gke-research-autoscaler-default-pool-0298af38-q04g
+16m         Normal    Scheduled           pod/load-generator-55c4597646-g5bcd    Successfully assigned research-workload/load-generator-55c4597646-g5bcd to gke-research-autoscaler-default-pool-0298af38-pltp
+41m         Warning   FailedScheduling    pod/load-generator-bd586c8df-6ll2k     0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+16m         Normal    Scheduled           pod/load-generator-55c4597646-vd6pk    Successfully assigned research-workload/load-generator-55c4597646-vd6pk to gke-research-autoscaler-default-pool-0298af38-t9t3
+42m         Warning   FailedScheduling    pod/load-generator-bd586c8df-jpvbv     0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+67m         Warning   FailedScheduling    pod/load-generator-fd74b4d9-mx8zx      0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+16m         Normal    Scheduled           pod/load-generator-55c4597646-26zng    Successfully assigned research-workload/load-generator-55c4597646-26zng to gke-research-autoscaler-default-pool-0298af38-pltp
+16m         Warning   FailedScheduling    pod/load-generator-55c4597646-mwnvv    0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+42m         Warning   FailedScheduling    pod/load-generator-bd586c8df-qp59j     0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+42m         Warning   FailedScheduling    pod/load-generator-bd586c8df-5sgjr     0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+67m         Warning   FailedScheduling    pod/load-generator-fd74b4d9-j6m7x      0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+16m         Warning   FailedScheduling    pod/load-generator-55c4597646-hfjrx    0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+16m         Normal    Scheduled           pod/load-generator-55c4597646-hfjrx    Successfully assigned research-workload/load-generator-55c4597646-hfjrx to gke-research-autoscaler-default-pool-0298af38-pltp
+41m         Normal    Scheduled           pod/load-generator-bd586c8df-jpvbv     Successfully assigned research-workload/load-generator-bd586c8df-jpvbv to gke-research-autoscaler-default-pool-0298af38-pltp
+16m         Normal    Scheduled           pod/load-generator-55c4597646-hwkcb    Successfully assigned research-workload/load-generator-55c4597646-hwkcb to gke-research-autoscaler-default-pool-0298af38-pltp
+42m         Warning   FailedScheduling    pod/load-generator-bd586c8df-qp59j     0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+42m         Normal    Scheduled           pod/load-generator-bd586c8df-qp59j     Successfully assigned research-workload/load-generator-bd586c8df-qp59j to gke-research-autoscaler-default-pool-0298af38-pltp
+16m         Warning   FailedScheduling    pod/load-generator-55c4597646-hwkcb    0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+16m         Warning   FailedScheduling    pod/load-generator-55c4597646-hwkcb    0/3 nodes are available: 3 Insufficient memory. no new claims to deallocate, preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+42m         Normal    ScalingReplicaSet   deployment/load-generator              Scaled up replica set load-generator-bd586c8df from 3 to 5
+42m         Normal    SuccessfulCreate    replicaset/load-generator-bd586c8df    Created pod: load-generator-bd586c8df-tnkds
+42m         Normal    Killing             pod/load-generator-fd74b4d9-94ch6      Stopping container stressor
+42m         Normal    Killing             pod/load-generator-fd74b4d9-vjjx4      Stopping container stressor
+42m         Normal    SuccessfulDelete    replicaset/load-generator-fd74b4d9     Deleted pod: load-generator-fd74b4d9-94ch6
+42m         Normal    ScalingReplicaSet   deployment/load-generator              Scaled down replica set load-generator-fd74b4d9 from 10 to 8
+42m         Normal    SuccessfulDelete    replicaset/load-generator-fd74b4d9     Deleted pod: load-generator-fd74b4d9-vjjx4
+42m         Normal    ScalingReplicaSet   deployment/load-generator              Scaled up replica set load-generator-bd586c8df from 0 to 3
+42m         Normal    SuccessfulCreate    replicaset/load-generator-bd586c8df    Created pod: load-generator-bd586c8df-b97hk
+42m         Normal    SuccessfulCreate    replicaset/load-generator-bd586c8df    Created pod: load-generator-bd586c8df-qp59j
+42m         Normal    SuccessfulCreate    replicaset/load-generator-bd586c8df    Created pod: load-generator-bd586c8df-9fpqp
+42m         Normal    NotTriggerScaleUp   pod/load-generator-bd586c8df-qp59j     Pod didn't trigger scale-up:
+42m         Normal    SuccessfulCreate    replicaset/load-generator-bd586c8df    Created pod: load-generator-bd586c8df-5sgjr
+42m         Normal    NotTriggerScaleUp   pod/load-generator-bd586c8df-5sgjr     Pod didn't trigger scale-up:
+42m         Normal    Created             pod/load-generator-bd586c8df-tnkds     Container created
+42m         Normal    Pulling             pod/load-generator-bd586c8df-9fpqp     Pulling image "alexeiled/stress-ng:latest"
+42m         Normal    Started             pod/load-generator-bd586c8df-tnkds     Container started
+42m         Normal    Started             pod/load-generator-bd586c8df-9fpqp     Container started
+42m         Normal    Pulled              pod/load-generator-bd586c8df-tnkds     Successfully pulled image "alexeiled/stress-ng:latest" in 263ms (263ms including waiting). Image size: 3939132 bytes.
+42m         Normal    Pulling             pod/load-generator-bd586c8df-tnkds     Pulling image "alexeiled/stress-ng:latest"
+42m         Normal    SuccessfulDelete    replicaset/load-generator-fd74b4d9     Deleted pod: load-generator-fd74b4d9-4zjcb
+42m         Normal    Created             pod/load-generator-bd586c8df-9fpqp     Container created
+42m         Normal    ScalingReplicaSet   deployment/load-generator              Scaled down replica set load-generator-fd74b4d9 from 8 to 7
+42m         Normal    Pulled              pod/load-generator-bd586c8df-9fpqp     Successfully pulled image "alexeiled/stress-ng:latest" in 263ms (264ms including waiting). Image size: 3939132 bytes.
+42m         Normal    SuccessfulCreate    replicaset/load-generator-bd586c8df    Created pod: load-generator-bd586c8df-ff58r
+42m         Normal    SuccessfulDelete    replicaset/load-generator-fd74b4d9     Deleted pod: load-generator-fd74b4d9-jcksf
+42m         Normal    Killing             pod/load-generator-fd74b4d9-4zjcb      Stopping container stressor
+42m         Normal    Killing             pod/load-generator-fd74b4d9-jcksf      Stopping container stressor
+42m         Normal    ScalingReplicaSet   deployment/load-generator              Scaled up replica set load-generator-bd586c8df from 5 to 6
+42m         Normal    NotTriggerScaleUp   pod/load-generator-bd586c8df-hm8xw     Pod didn't trigger scale-up:
+42m         Normal    SuccessfulCreate    replicaset/load-generator-bd586c8df    Created pod: load-generator-bd586c8df-hm8xw
+42m         Normal    NotTriggerScaleUp   pod/load-generator-bd586c8df-ff58r     Pod didn't trigger scale-up:
+42m         Normal    Pulling             pod/load-generator-bd586c8df-hm8xw     Pulling image "alexeiled/stress-ng:latest"
+42m         Normal    Pulled              pod/load-generator-bd586c8df-hm8xw     Successfully pulled image "alexeiled/stress-ng:latest" in 265ms (265ms including waiting). Image size: 3939132 bytes.
+42m         Normal    Created             pod/load-generator-bd586c8df-hm8xw     Container created
+42m         Normal    Pulled              pod/load-generator-bd586c8df-b97hk     Successfully pulled image "alexeiled/stress-ng:latest" in 499ms (501ms including waiting). Image size: 3939132 bytes.
+42m         Normal    Pulling             pod/load-generator-bd586c8df-b97hk     Pulling image "alexeiled/stress-ng:latest"
+42m         Normal    NotTriggerScaleUp   pod/load-generator-bd586c8df-jpvbv     Pod didn't trigger scale-up:
+42m         Normal    Killing             pod/load-generator-fd74b4d9-lbm7k      Stopping container stressor
+42m         Normal    SuccessfulCreate    replicaset/load-generator-bd586c8df    Created pod: load-generator-bd586c8df-jpvbv
+42m         Normal    SuccessfulDelete    replicaset/load-generator-fd74b4d9     Deleted pod: load-generator-fd74b4d9-lbm7k
+42m         Normal    Created             pod/load-generator-bd586c8df-b97hk     Container created
+42m         Normal    Started             pod/load-generator-bd586c8df-hm8xw     Container started
+42m         Normal    Pulling             pod/load-generator-bd586c8df-ff58r     Pulling image "alexeiled/stress-ng:latest"
+42m         Normal    Pulling             pod/load-generator-bd586c8df-5sgjr     Pulling image "alexeiled/stress-ng:latest"
+42m         Normal    Pulled              pod/load-generator-bd586c8df-5sgjr     Successfully pulled image "alexeiled/stress-ng:latest" in 495ms (495ms including waiting). Image size: 3939132 bytes.
+42m         Normal    Created             pod/load-generator-bd586c8df-5sgjr     Container created
+42m         Normal    Pulling             pod/load-generator-bd586c8df-qp59j     Pulling image "alexeiled/stress-ng:latest"
+42m         Normal    Started             pod/load-generator-bd586c8df-b97hk     Container started
+41m         Normal    Started             pod/load-generator-bd586c8df-5sgjr     Container started
+41m         Normal    SuccessfulCreate    replicaset/load-generator-bd586c8df    Created pod: load-generator-bd586c8df-9mms6
+41m         Normal    NotTriggerScaleUp   pod/load-generator-bd586c8df-9mms6     Pod didn't trigger scale-up:
+41m         Normal    SuccessfulDelete    replicaset/load-generator-fd74b4d9     Deleted pod: load-generator-fd74b4d9-j6m7x
+41m         Normal    Pulled              pod/load-generator-bd586c8df-qp59j     Successfully pulled image "alexeiled/stress-ng:latest" in 283ms (284ms including waiting). Image size: 3939132 bytes.
+41m         Normal    Created             pod/load-generator-bd586c8df-qp59j     Container created
+41m         Normal    Killing             pod/load-generator-fd74b4d9-j6m7x      Stopping container stressor
+41m         Normal    Killing             pod/load-generator-fd74b4d9-mx8zx      Stopping container stressor
+41m         Normal    Pulled              pod/load-generator-bd586c8df-ff58r     Successfully pulled image "alexeiled/stress-ng:latest" in 2.518s (2.518s including waiting). Image size: 3939132 bytes.
+41m         Normal    SuccessfulCreate    replicaset/load-generator-bd586c8df    (combined from similar events): Created pod: load-generator-bd586c8df-6ll2k
+41m         Normal    Started             pod/load-generator-bd586c8df-qp59j     Container started
+41m         Normal    SuccessfulDelete    replicaset/load-generator-fd74b4d9     Deleted pod: load-generator-fd74b4d9-mx8zx
+41m         Normal    SuccessfulDelete    replicaset/load-generator-fd74b4d9     Deleted pod: load-generator-fd74b4d9-5dpp6
+41m         Normal    NotTriggerScaleUp   pod/load-generator-bd586c8df-6ll2k     Pod didn't trigger scale-up:
+41m         Normal    Created             pod/load-generator-bd586c8df-ff58r     Container created
+41m         Normal    Started             pod/load-generator-bd586c8df-ff58r     Container started
+41m         Normal    Killing             pod/load-generator-fd74b4d9-5dpp6      Stopping container stressor
+41m         Normal    SuccessfulDelete    replicaset/load-generator-fd74b4d9     Deleted pod: load-generator-fd74b4d9-5hfc9
+41m         Normal    Pulling             pod/load-generator-bd586c8df-jpvbv     Pulling image "alexeiled/stress-ng:latest"
+41m         Normal    Pulled              pod/load-generator-bd586c8df-jpvbv     Successfully pulled image "alexeiled/stress-ng:latest" in 274ms (274ms including waiting). Image size: 3939132 bytes.
+41m         Normal    Created             pod/load-generator-bd586c8df-jpvbv     Container created
+41m         Normal    Killing             pod/load-generator-fd74b4d9-5hfc9      Stopping container stressor
+41m         Normal    Started             pod/load-generator-bd586c8df-jpvbv     Container started
+41m         Normal    Killing             pod/load-generator-fd74b4d9-c7xd2      Stopping container stressor
+41m         Normal    SuccessfulDelete    replicaset/load-generator-fd74b4d9     (combined from similar events): Deleted pod: load-generator-fd74b4d9-c7xd2
+41m         Normal    Created             pod/load-generator-bd586c8df-9mms6     Container created
+41m         Normal    Pulled              pod/load-generator-bd586c8df-9mms6     Successfully pulled image "alexeiled/stress-ng:latest" in 480ms (480ms including waiting). Image size: 3939132 bytes.
+41m         Normal    Pulling             pod/load-generator-bd586c8df-6ll2k     Pulling image "alexeiled/stress-ng:latest"
+41m         Normal    Pulling             pod/load-generator-bd586c8df-9mms6     Pulling image "alexeiled/stress-ng:latest"
+41m         Normal    Pulled              pod/load-generator-bd586c8df-6ll2k     Successfully pulled image "alexeiled/stress-ng:latest" in 312ms (312ms including waiting). Image size: 3939132 bytes.
+41m         Normal    Created             pod/load-generator-bd586c8df-6ll2k     Container created
+41m         Normal    Started             pod/load-generator-bd586c8df-9mms6     Container started
+41m         Normal    Started             pod/load-generator-bd586c8df-6ll2k     Container started
+16m         Normal    ScalingReplicaSet   deployment/load-generator              Scaled down replica set load-generator-bd586c8df from 10 to 8
+16m         Normal    ScalingReplicaSet   deployment/load-generator              Scaled up replica set load-generator-55c4597646 from 0 to 3
+16m         Normal    SuccessfulCreate    replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-g5bcd
+16m         Normal    SuccessfulCreate    replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-26zng
+16m         Normal    ScalingReplicaSet   deployment/load-generator              Scaled up replica set load-generator-55c4597646 from 3 to 5
+16m         Normal    Killing             pod/load-generator-bd586c8df-hm8xw     Stopping container stressor
+16m         Normal    NotTriggerScaleUp   pod/load-generator-55c4597646-26zng    Pod didn't trigger scale-up:
+16m         Normal    SuccessfulDelete    replicaset/load-generator-bd586c8df    Deleted pod: load-generator-bd586c8df-hm8xw
+16m         Normal    SuccessfulCreate    replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-gd62z
+16m         Normal    SuccessfulCreate    replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-8bpz7
+16m         Normal    NotTriggerScaleUp   pod/load-generator-55c4597646-g5bcd    Pod didn't trigger scale-up:
+16m         Normal    SuccessfulDelete    replicaset/load-generator-bd586c8df    Deleted pod: load-generator-bd586c8df-b97hk
+16m         Normal    SuccessfulCreate    replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-2cj5g
+16m         Normal    Killing             pod/load-generator-bd586c8df-b97hk     Stopping container stressor
+16m         Normal    Pulling             pod/load-generator-55c4597646-26zng    Pulling image "alexeiled/stress-ng:latest"
+16m         Normal    Started             pod/load-generator-55c4597646-26zng    Container started
+16m         Normal    Created             pod/load-generator-55c4597646-26zng    Container created
+16m         Normal    Pulled              pod/load-generator-55c4597646-26zng    Successfully pulled image "alexeiled/stress-ng:latest" in 113ms (113ms including waiting). Image size: 3939132 bytes.
+16m         Normal    Created             pod/load-generator-55c4597646-g5bcd    Container created
+16m         Normal    Pulling             pod/load-generator-55c4597646-8bpz7    Pulling image "alexeiled/stress-ng:latest"
+16m         Normal    ScalingReplicaSet   deployment/load-generator              Scaled up replica set load-generator-55c4597646 from 5 to 6
+16m         Normal    Started             pod/load-generator-55c4597646-gd62z    Container started
+16m         Normal    ScalingReplicaSet   deployment/load-generator              Scaled down replica set load-generator-bd586c8df from 8 to 7
+16m         Normal    Created             pod/load-generator-55c4597646-gd62z    Container created
+16m         Normal    Pulled              pod/load-generator-55c4597646-gd62z    Successfully pulled image "alexeiled/stress-ng:latest" in 139ms (337ms including waiting). Image size: 3939132 bytes.
+16m         Normal    Pulling             pod/load-generator-55c4597646-gd62z    Pulling image "alexeiled/stress-ng:latest"
+16m         Normal    Started             pod/load-generator-55c4597646-g5bcd    Container started
+16m         Normal    NotTriggerScaleUp   pod/load-generator-55c4597646-mwnvv    Pod didn't trigger scale-up:
+16m         Normal    Killing             pod/load-generator-bd586c8df-jpvbv     Stopping container stressor
+16m         Normal    SuccessfulDelete    replicaset/load-generator-bd586c8df    Deleted pod: load-generator-bd586c8df-jpvbv
+16m         Normal    Pulled              pod/load-generator-55c4597646-g5bcd    Successfully pulled image "alexeiled/stress-ng:latest" in 155ms (155ms including waiting). Image size: 3939132 bytes.
+16m         Normal    Pulling             pod/load-generator-55c4597646-2cj5g    Pulling image "alexeiled/stress-ng:latest"
+16m         Normal    Pulled              pod/load-generator-55c4597646-2cj5g    Successfully pulled image "alexeiled/stress-ng:latest" in 205ms (206ms including waiting). Image size: 3939132 bytes.
+16m         Normal    Created             pod/load-generator-55c4597646-2cj5g    Container created
+16m         Normal    Started             pod/load-generator-55c4597646-2cj5g    Container started
+16m         Normal    Pulling             pod/load-generator-55c4597646-g5bcd    Pulling image "alexeiled/stress-ng:latest"
+16m         Normal    Pulled              pod/load-generator-55c4597646-8bpz7    Successfully pulled image "alexeiled/stress-ng:latest" in 202ms (202ms including waiting). Image size: 3939132 bytes.
+16m         Normal    Created             pod/load-generator-55c4597646-8bpz7    Container created
+16m         Normal    Started             pod/load-generator-55c4597646-8bpz7    Container started
+16m         Normal    SuccessfulCreate    replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-mwnvv
+16m         Normal    Pulled              pod/load-generator-55c4597646-mwnvv    Successfully pulled image "alexeiled/stress-ng:latest" in 128ms (128ms including waiting). Image size: 3939132 bytes.
+16m         Normal    SuccessfulCreate    replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-hfjrx
+16m         Normal    SuccessfulDelete    replicaset/load-generator-bd586c8df    Deleted pod: load-generator-bd586c8df-5sgjr
+16m         Normal    SuccessfulDelete    replicaset/load-generator-bd586c8df    Deleted pod: load-generator-bd586c8df-ff58r
+16m         Normal    Killing             pod/load-generator-bd586c8df-5sgjr     Stopping container stressor
+16m         Normal    Pulling             pod/load-generator-55c4597646-mwnvv    Pulling image "alexeiled/stress-ng:latest"
+16m         Normal    Created             pod/load-generator-55c4597646-mwnvv    Container created
+16m         Normal    SuccessfulCreate    replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-vd6pk
+16m         Normal    SuccessfulDelete    replicaset/load-generator-bd586c8df    Deleted pod: load-generator-bd586c8df-6ll2k
+16m         Normal    SuccessfulDelete    replicaset/load-generator-bd586c8df    Deleted pod: load-generator-bd586c8df-qp59j
+16m         Normal    NotTriggerScaleUp   pod/load-generator-55c4597646-hfjrx    Pod didn't trigger scale-up:
+16m         Normal    Started             pod/load-generator-55c4597646-mwnvv    Container started
+16m         Normal    Killing             pod/load-generator-bd586c8df-ff58r     Stopping container stressor
+16m         Normal    Pulled              pod/load-generator-55c4597646-hfjrx    Successfully pulled image "alexeiled/stress-ng:latest" in 134ms (134ms including waiting). Image size: 3939132 bytes.
+16m         Normal    NotTriggerScaleUp   pod/load-generator-55c4597646-k49mw    Pod didn't trigger scale-up:
+16m         Normal    Pulled              pod/load-generator-55c4597646-vd6pk    Successfully pulled image "alexeiled/stress-ng:latest" in 120ms (120ms including waiting). Image size: 3939132 bytes.
+16m         Normal    Created             pod/load-generator-55c4597646-hfjrx    Container created
+16m         Normal    Started             pod/load-generator-55c4597646-hfjrx    Container started
+16m         Normal    Pulling             pod/load-generator-55c4597646-vd6pk    Pulling image "alexeiled/stress-ng:latest"
+16m         Normal    Killing             pod/load-generator-bd586c8df-6ll2k     Stopping container stressor
+16m         Normal    SuccessfulCreate    replicaset/load-generator-55c4597646   (combined from similar events): Created pod: load-generator-55c4597646-hwkcb
+16m         Normal    Pulling             pod/load-generator-55c4597646-hfjrx    Pulling image "alexeiled/stress-ng:latest"
+16m         Normal    NotTriggerScaleUp   pod/load-generator-55c4597646-hwkcb    Pod didn't trigger scale-up:
+16m         Normal    Killing             pod/load-generator-bd586c8df-qp59j     Stopping container stressor
+16m         Normal    SuccessfulCreate    replicaset/load-generator-55c4597646   Created pod: load-generator-55c4597646-k49mw
+16m         Normal    Started             pod/load-generator-55c4597646-vd6pk    Container started
+16m         Normal    SuccessfulDelete    replicaset/load-generator-bd586c8df    Deleted pod: load-generator-bd586c8df-tnkds
+16m         Normal    Created             pod/load-generator-55c4597646-vd6pk    Container created
+16m         Normal    Pulling             pod/load-generator-55c4597646-k49mw    Pulling image "alexeiled/stress-ng:latest"
+16m         Normal    Killing             pod/load-generator-bd586c8df-9mms6     Stopping container stressor
+16m         Normal    SuccessfulDelete    replicaset/load-generator-bd586c8df    Deleted pod: load-generator-bd586c8df-9mms6
+16m         Normal    Killing             pod/load-generator-bd586c8df-tnkds     Stopping container stressor
+16m         Normal    Started             pod/load-generator-55c4597646-k49mw    Container started
+16m         Normal    Pulled              pod/load-generator-55c4597646-hwkcb    Successfully pulled image "alexeiled/stress-ng:latest" in 108ms (108ms including waiting). Image size: 3939132 bytes.
+16m         Normal    SuccessfulDelete    replicaset/load-generator-bd586c8df    (combined from similar events): Deleted pod: load-generator-bd586c8df-9fpqp
+16m         Normal    Pulling             pod/load-generator-55c4597646-hwkcb    Pulling image "alexeiled/stress-ng:latest"
+16m         Normal    Created             pod/load-generator-55c4597646-k49mw    Container created
+16m         Normal    Killing             pod/load-generator-bd586c8df-9fpqp     Stopping container stressor
+16m         Normal    Started             pod/load-generator-55c4597646-hwkcb    Container started
+16m         Normal    Pulled              pod/load-generator-55c4597646-k49mw    Successfully pulled image "alexeiled/stress-ng:latest" in 161ms (161ms including waiting). Image size: 3939132 bytes.
+16m         Normal    Created             pod/load-generator-55c4597646-hwkcb    Container created
+6s          Normal    BackOff             pod/trace-replayer-w6krm               Back-off pulling image "us-central1-docker.pkg.dev/research-autoscaler-2026/research/autoscaler:v2"
+6s          Warning   Failed              pod/trace-replayer-w6krm               Error: ImagePullBackOff
