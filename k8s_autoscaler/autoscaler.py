@@ -4,16 +4,16 @@ Predictive CPU Auto-Scaler for Kubernetes
 Research: Adaptive CPU Auto-Scaling Using Hybrid Neural Networks and
           Continual Learning in Kubernetes Orchestration
 
-Uses the trained hybrid LSTM+MLP model (hybrid_model_ewc_er.keras) to predict
+Uses the trained hybrid LSTM+MLP model (hybrid_model_ewc_er.h5) to predict
 CPU demand exactly 30 minutes ahead and scales a target Deployment accordingly.
 
-Model I/O (must match training in research_imp_V2.py):
+Model I/O (must match training in research_imp_V3_linux_gpu.py):
   Input 1 - temporal:  (1, 24, 10)   24 x 5-min steps, 10 features
-  Input 2 - static:    (1, 7)         6 workload features + app_id
+  Input 2 - static:    (1, 6)         5 workload features + app_id
   Output  - scalar:    (1, 1)         predicted CPU (scaled); invert with target_scaler
 
-Required files (produced by research_imp_V2.py, upload to /model/ PVC):
-  hybrid_model_ewc_er.keras   trained model
+Required files (produced by research_imp_V3_linux_gpu.py, upload to /model/ PVC):
+  hybrid_model_ewc_er.h5      trained model (V3 h5 format; .keras zip also accepted)
   temporal_scaler.pkl          StandardScaler for temporal features
   static_scaler.pkl            StandardScaler for static features
   target_scaler.pkl            StandardScaler for target (cpu_demand)
@@ -60,7 +60,19 @@ log = logging.getLogger("autoscaler")
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-MODEL_DIR         = os.getenv("MODEL_DIR",          "/model")
+# Base directory of the autoscaler package — override with AUTOSCALER_DIR if
+# the folder has been moved or renamed.
+AUTOSCALER_DIR    = os.getenv("AUTOSCALER_DIR",     os.path.dirname(os.path.abspath(__file__)))
+
+# MODEL_DIR resolution order:
+#   1. MODEL_DIR env var (set by K8s ConfigMap → /model PVC mount)
+#   2. config.py _MODEL_DIR (local path to V3 training artifacts)
+#   3. /model fallback
+try:
+    from config import MODEL_DIR as _CONFIG_MODEL_DIR
+except ImportError:
+    _CONFIG_MODEL_DIR = "/model"
+MODEL_DIR         = os.getenv("MODEL_DIR", _CONFIG_MODEL_DIR)
 PROMETHEUS_URL    = os.getenv("PROMETHEUS_URL",      "http://prometheus-operated:9090")
 TARGET_NAMESPACE  = os.getenv("TARGET_NAMESPACE",    "research-workload")
 TARGET_DEPLOYMENT = os.getenv("TARGET_DEPLOYMENT",   "sample-workload")
@@ -98,7 +110,7 @@ def _build_model(keras):
     x = LSTM(32, name="lstm_32")(x)
     lstm_embed = Dense(16, activation="relu", name="lstm_embedding")(x)
 
-    mlp_input = Input(shape=(7,), name="static_input")
+    mlp_input = Input(shape=(6,), name="static_input")
     x = Dense(64, activation="relu", name="mlp_64")(mlp_input)
     x = BatchNormalization(name="mlp_bn")(x)
     x = Dropout(0.2, name="mlp_drop")(x)
@@ -115,25 +127,36 @@ def _build_model(keras):
 def load_artifacts(model_dir: str):
     """
     Returns (model, temporal_scaler, static_scaler, target_scaler).
-    All four files must exist in model_dir — they are produced by research_imp_V2.py.
+    Produced by research_imp_V3_linux_gpu.py. Supports both .h5 (V3) and
+    .keras zip (legacy) model formats — .keras is tried first for backward compat.
     """
-    import keras  
-    model_path    = os.path.join(model_dir, "hybrid_model_ewc_er.keras")
+    import keras
+    keras_path    = os.path.join(model_dir, "hybrid_model_ewc_er.keras")
+    h5_path       = os.path.join(model_dir, "hybrid_model_ewc_er.h5")
     t_scaler_path = os.path.join(model_dir, "temporal_scaler.pkl")
     s_scaler_path = os.path.join(model_dir, "static_scaler.pkl")
     y_scaler_path = os.path.join(model_dir, "target_scaler.pkl")
 
-    for path in [model_path, t_scaler_path, s_scaler_path, y_scaler_path]:
+    for path in [t_scaler_path, s_scaler_path, y_scaler_path]:
         if not os.path.exists(path):
             raise FileNotFoundError(f"Required artifact missing: {path}")
 
-    log.info(f"Loading model from {model_path}")
-    model = _build_model(keras)
-    with zipfile.ZipFile(model_path, "r") as zf:
-        with tempfile.TemporaryDirectory() as tmp:
-            zf.extract("model.weights.h5", tmp)
-            model.load_weights(os.path.join(tmp, "model.weights.h5"))
-    log.info("Model weights loaded successfully")
+    if os.path.exists(keras_path):
+        log.info(f"Loading model from {keras_path} (.keras zip format)")
+        model = _build_model(keras)
+        with zipfile.ZipFile(keras_path, "r") as zf:
+            with tempfile.TemporaryDirectory() as tmp:
+                zf.extract("model.weights.h5", tmp)
+                model.load_weights(os.path.join(tmp, "model.weights.h5"))
+        log.info("Model loaded from .keras (zip) format")
+    elif os.path.exists(h5_path):
+        log.info(f"Loading model from {h5_path} (.h5 V3 format)")
+        model = keras.models.load_model(h5_path, compile=False)
+        log.info("Model loaded from .h5 (V3) format")
+    else:
+        raise FileNotFoundError(
+            f"No model found at {keras_path} or {h5_path}"
+        )
 
 
     with open(t_scaler_path, "rb") as fh:
@@ -149,7 +172,7 @@ def load_artifacts(model_dir: str):
 
 # ---------------------------------------------------------------------------
 # Feature engineering
-# Mirrors the exact feature construction in research_imp_V2.py (lines 1590-1609)
+# Mirrors the exact feature construction in research_imp_V3_linux_gpu.py
 #
 # Temporal features (10 columns, order must match temporal_scaler):
 #   0  cpu_demand
@@ -163,14 +186,16 @@ def load_artifacts(model_dir: str):
 #   8  dow_sin
 #   9  dow_cos
 #
-# Static features (7 columns, order must match static_scaler):
+# Static features (6 columns, order must match static_scaler):
 #   0  gpu_request_mean
 #   1  memory_request_mean
 #   2  rdma_request_mean
 #   3  role_hn_fraction
-#   4  instance_count
-#   5  max_instance_per_node
-#   6  app_id
+#   4  max_instance_per_node
+#   5  app_id
+# NOTE: instance_count was removed from the static feature set because it leaks
+# the target (cpu_demand = sum of active cpu_request scales directly with the
+# active instance count). The model is now trained on 6 static features.
 # ---------------------------------------------------------------------------
 
 def build_temporal_matrix(cpu_history: np.ndarray) -> np.ndarray:
@@ -207,15 +232,15 @@ def build_temporal_matrix(cpu_history: np.ndarray) -> np.ndarray:
 
 def build_static_vector() -> np.ndarray:
     """
-    Build (7,) static feature vector from env vars.
+    Build (6,) static feature vector from env vars.
     Represents the workload's resource profile — same features as training.
+    instance_count is intentionally excluded (target leak); see note above.
     """
     return np.array([
         float(os.getenv("STATIC_GPU_REQUEST",    "0.0")),
         float(os.getenv("STATIC_MEM_GIB",        "0.128")),
         float(os.getenv("STATIC_RDMA",           "0.0")),
         float(os.getenv("STATIC_HN_FRACTION",    "0.0")),
-        float(os.getenv("STATIC_INSTANCE_COUNT", "1.0")),
         float(os.getenv("STATIC_MAX_PER_NODE",   "0.0")),
         APP_ID,
     ], dtype=np.float32)
@@ -348,11 +373,11 @@ def predict_cpu_demand(
     """
     Run the hybrid LSTM+MLP model and return predicted CPU (vCPU) at t+30min.
 
-    Pipeline (mirrors inference path from research_imp_V2.py):
+    Pipeline (mirrors inference path from research_imp_V3_linux_gpu.py):
       0. Map live CPU history into the training domain (× domain_scale)
       1. Build raw temporal matrix (24, 10)
       2. Scale with temporal_scaler
-      3. Build raw static vector (7,)
+      3. Build raw static vector (6,)
       4. Scale with static_scaler
       5. model.predict -> scaled output (1, 1)
       6. inverse_transform with target_scaler -> training-domain CPU
@@ -366,13 +391,13 @@ def predict_cpu_demand(
     cpu_history_model = cpu_history * domain_scale
 
     temporal_raw = build_temporal_matrix(cpu_history_model)  # (24, 10)
-    static_raw   = build_static_vector()                     # (7,)
+    static_raw   = build_static_vector()                     # (6,)
 
     temporal_scaled = temporal_scaler.transform(temporal_raw)               # (24, 10)
-    static_scaled   = static_scaler.transform(static_raw.reshape(1, -1))   # (1, 7)
+    static_scaled   = static_scaler.transform(static_raw.reshape(1, -1))   # (1, 6)
 
     t_input = temporal_scaled[np.newaxis, :, :]   # (1, 24, 10)
-    s_input = static_scaled                        # (1, 7)
+    s_input = static_scaled                        # (1, 6)
 
     pred_scaled = model.predict([t_input, s_input], verbose=0)   # (1, 1)
     pred_cpu    = float(target_scaler.inverse_transform(pred_scaled.reshape(-1, 1))[0, 0])
