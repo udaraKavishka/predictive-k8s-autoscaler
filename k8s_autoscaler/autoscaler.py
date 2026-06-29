@@ -151,7 +151,69 @@ def load_artifacts(model_dir: str):
         log.info("Model loaded from .keras (zip) format")
     elif os.path.exists(h5_path):
         log.info(f"Loading model from {h5_path} (.h5 V3 format)")
-        model = keras.models.load_model(h5_path, compile=False)
+        # keras==3.4.1 resolves built-in layer classes by module path, so
+        # custom_objects={"Dense": ...} is ignored for built-ins. Instead, we
+        # read the model_config JSON from the h5, strip unknown kwargs directly
+        # in the JSON, write a patched temp copy, and load from that — letting
+        # the standard legacy-h5 loader handle both config and weights.
+        import copy as _copy, json as _json, re as _re, shutil as _shutil
+
+        try:
+            import h5py as _h5py
+        except ImportError:
+            _h5py = None
+
+        def _strip_unknown_in_config(cfg_node, strip_map):
+            if isinstance(cfg_node, dict):
+                cls_name = cfg_node.get("class_name")
+                if cls_name and cls_name in strip_map and "config" in cfg_node:
+                    for bad_key in strip_map[cls_name]:
+                        cfg_node["config"].pop(bad_key, None)
+                for v in cfg_node.values():
+                    _strip_unknown_in_config(v, strip_map)
+            elif isinstance(cfg_node, list):
+                for item in cfg_node:
+                    _strip_unknown_in_config(item, strip_map)
+
+        if _h5py is None:
+            # h5py unavailable — fall back to direct load (may fail on version mismatch)
+            model = keras.models.load_model(h5_path, compile=False)
+        else:
+            with _h5py.File(h5_path, "r") as _f:
+                _orig_config = _json.loads(_f.attrs["model_config"])
+            _strip_map = {}
+            for _attempt in range(15):
+                _patched = _copy.deepcopy(_orig_config)
+                _strip_unknown_in_config(_patched, _strip_map)
+                with tempfile.NamedTemporaryFile(suffix=".h5", delete=False) as _tmp:
+                    _tmp_path = _tmp.name
+                try:
+                    _shutil.copy2(h5_path, _tmp_path)
+                    with _h5py.File(_tmp_path, "r+") as _f:
+                        _f.attrs["model_config"] = _json.dumps(_patched)
+                    model = keras.models.load_model(_tmp_path, compile=False)
+                    break
+                except Exception as _exc:
+                    _msg = str(_exc)
+                    _m = _re.search(
+                        r"Unrecognized keyword arguments?\s+passed to (\w+)\s*:\s*(\{[^}]+\})",
+                        _msg,
+                    )
+                    if not _m:
+                        raise
+                    _cls = _m.group(1)
+                    _bad = _re.findall(r"'(\w+)'\s*:", _m.group(2))
+                    if not _bad:
+                        raise
+                    _strip_map.setdefault(_cls, set()).update(_bad)
+                    log.warning(f"Stripping {_bad} from {_cls} config, retrying…")
+                finally:
+                    try:
+                        os.unlink(_tmp_path)
+                    except OSError:
+                        pass
+            else:
+                raise RuntimeError("h5 model load failed after 15 attempts to strip unknown kwargs")
         log.info("Model loaded from .h5 (V3) format")
     else:
         raise FileNotFoundError(
