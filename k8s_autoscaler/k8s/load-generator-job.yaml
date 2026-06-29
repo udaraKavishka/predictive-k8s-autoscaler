@@ -25,7 +25,7 @@ spec:
 
       containers:
         - name: replayer
-          image: us-central1-docker.pkg.dev/research-autoscaler-2026/research/autoscaler:v2
+          image: us-central1-docker.pkg.dev/research-autoscaler-2026/research/autoscaler
           # ↑ Same image as autoscaler (load_replayer.py is included)
 
           command:
