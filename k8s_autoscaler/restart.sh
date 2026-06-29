@@ -9,9 +9,19 @@ PROJECT_ID=research-autoscaler-2026
 REGION=us-central1
 ZONE=us-central1-a
 CLUSTER=research-autoscaler
-IMAGE=$REGION-docker.pkg.dev/$PROJECT_ID/research/autoscaler:v1
-RESEARCH_DIR=/home/udara/Documents/Research
-K8S_DIR=$RESEARCH_DIR/k8s_autoscaler
+IMAGE=$REGION-docker.pkg.dev/$PROJECT_ID/research/autoscaler
+
+# Derive K8S_DIR from the script's own location — no hardcoded paths.
+K8S_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Read MODEL_DIR and DATA_CSV from config.py (single source of truth).
+_cfg() { python3 -c "import sys; sys.path.insert(0,'$K8S_DIR'); from config import $1; print($1)"; }
+MODEL_DIR="$(_cfg MODEL_DIR)"
+DATA_CSV="$(_cfg DATA_CSV)"
+
+echo "    K8S_DIR   : $K8S_DIR"
+echo "    MODEL_DIR : $MODEL_DIR"
+echo "    DATA_CSV  : $DATA_CSV"
 
 echo "=========================================================="
 echo " Research Autoscaler — GKE Restart Script"
@@ -109,14 +119,8 @@ kubectl apply -f k8s/namespace.yaml
 kubectl apply -f k8s/autoscaler-cronjob.yaml   # creates model-pvc
 kubectl apply -f k8s/load-generator-job.yaml   # creates data-pvc
 
-echo "    Waiting for PVCs to bind..."
-kubectl wait --for=jsonpath='{.status.phase}'=Bound \
-  pvc/model-pvc -n research-autoscaler --timeout=90s
-kubectl wait --for=jsonpath='{.status.phase}'=Bound \
-  pvc/data-pvc -n research-workload --timeout=90s
-
-# Upload model artifacts
-echo "    Uploading model files..."
+# Step 1: Create both uploader pods first — they are the first consumers of the
+# PVCs, which triggers WaitForFirstConsumer binding on standard-rwo.
 kubectl run model-uploader \
   --image=busybox \
   --restart=Never \
@@ -133,23 +137,6 @@ kubectl run model-uploader \
     }
   }' 2>/dev/null || echo "    model-uploader pod already exists"
 
-kubectl wait pod/model-uploader -n research-autoscaler --for=condition=Ready --timeout=60s
-
-kubectl cp "$RESEARCH_DIR/hybrid_model_ewc_er.keras" \
-  research-autoscaler/model-uploader:/model/hybrid_model_ewc_er.keras
-kubectl cp "$RESEARCH_DIR/temporal_scaler.pkl" \
-  research-autoscaler/model-uploader:/model/temporal_scaler.pkl
-kubectl cp "$RESEARCH_DIR/static_scaler.pkl" \
-  research-autoscaler/model-uploader:/model/static_scaler.pkl
-kubectl cp "$RESEARCH_DIR/target_scaler.pkl" \
-  research-autoscaler/model-uploader:/model/target_scaler.pkl
-
-echo "    Model files uploaded:"
-kubectl exec -n research-autoscaler model-uploader -- ls -lh /model/
-kubectl delete pod model-uploader -n research-autoscaler
-
-# Upload trace data
-echo "    Uploading Alibaba trace CSV..."
 kubectl run data-uploader \
   --image=busybox \
   --restart=Never \
@@ -166,9 +153,35 @@ kubectl run data-uploader \
     }
   }' 2>/dev/null || echo "    data-uploader pod already exists"
 
+# Step 2: Now wait for PVCs to bind — the uploader pods above are the consumers
+# that trigger binding, so this wait is now meaningful.
+echo "    Waiting for PVCs to bind..."
+kubectl wait --for=jsonpath='{.status.phase}'=Bound \
+  pvc/model-pvc -n research-autoscaler --timeout=120s
+kubectl wait --for=jsonpath='{.status.phase}'=Bound \
+  pvc/data-pvc -n research-workload --timeout=120s
+
+# Step 3: Wait for pods to be ready, then copy files.
+echo "    Uploading model files..."
+kubectl wait pod/model-uploader -n research-autoscaler --for=condition=Ready --timeout=60s
+
+kubectl cp "$MODEL_DIR/hybrid_model_ewc_er.h5" \
+  research-autoscaler/model-uploader:/model/hybrid_model_ewc_er.h5
+kubectl cp "$MODEL_DIR/temporal_scaler.pkl" \
+  research-autoscaler/model-uploader:/model/temporal_scaler.pkl
+kubectl cp "$MODEL_DIR/static_scaler.pkl" \
+  research-autoscaler/model-uploader:/model/static_scaler.pkl
+kubectl cp "$MODEL_DIR/target_scaler.pkl" \
+  research-autoscaler/model-uploader:/model/target_scaler.pkl
+
+echo "    Model files uploaded:"
+kubectl exec -n research-autoscaler model-uploader -- ls -lh /model/
+kubectl delete pod model-uploader -n research-autoscaler
+
+echo "    Uploading Alibaba trace CSV..."
 kubectl wait pod/data-uploader -n research-workload --for=condition=Ready --timeout=60s
 
-kubectl cp "$RESEARCH_DIR/alibaba_timeseries_full.csv" \
+kubectl cp "$DATA_CSV" \
   research-workload/data-uploader:/data/alibaba_timeseries_full.csv
 
 echo "    Data files uploaded:"
@@ -244,8 +257,7 @@ echo "    kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3
 echo "    # Grafana: http://localhost:3000  (admin / research2026)"
 echo ""
 echo "  Step 2 — Run the automated collector (~10 min, fish-compatible):"
-echo "    cd $K8S_DIR"
-echo "    python3 collect_evidence.py"
+echo "    cd $K8S_DIR && python3 collect_evidence.py"
 echo "    # Outputs: evidence/decisions.csv, evidence/prometheus_*.json,"
 echo "    #          evidence/summary_report.txt, etc."
 echo ""
@@ -258,6 +270,8 @@ echo "    fig5: Explore → Loki → {namespace=\"research-autoscaler\"} |= \"DE
 echo ""
 echo "  Step 4 — When done, run cleanup:"
 echo "    bash $K8S_DIR/cleanup.sh"
+echo ""
+echo "  (All paths above are read from config.py — edit _AUTOSCALER_DIR / _MODEL_DIR / _DATA_CSV to change them)"
 echo ""
 echo "=========================================================="
 echo " Full research flow:"
