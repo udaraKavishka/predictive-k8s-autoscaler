@@ -20,6 +20,7 @@ RUN python -m pip install --no-cache-dir --retries 5 -r requirements.txt
 # Copy scripts
 COPY autoscaler.py .
 COPY load_replayer.py .
+COPY config.py .
 
 # Log directory
 RUN mkdir -p /var/log
